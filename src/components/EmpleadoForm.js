@@ -31,17 +31,17 @@ function EmpleadoForm({ empleadoEditado, onSave }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(empleado)
     })
-    .then(res => res.json())
-    .then(data => {
-      onSave(data);
-      setEmpleado({
-        nombreEmpleado: "",
-        cargoEmpleado: "",
-        areaEmpleado: "",
-        contactoEmpleado: "",
-        usuarioIdUsuario: ""
+      .then(res => res.json())
+      .then(data => {
+        onSave(data);
+        setEmpleado({
+          nombreEmpleado: "",
+          cargoEmpleado: "",
+          areaEmpleado: "",
+          contactoEmpleado: "",
+          usuarioIdUsuario: ""
+        });
       });
-    });
   };
 
   return (

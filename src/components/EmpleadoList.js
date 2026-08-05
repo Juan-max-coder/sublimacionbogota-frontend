@@ -8,7 +8,10 @@ function EmpleadoList() {
   useEffect(() => {
     fetch("http://localhost:8080/empleados")
       .then(res => res.json())
-      .then(data => setEmpleados(data));
+      .then(data => {
+        console.log("Empleados recibidos:", data);
+        setEmpleados(data);
+      });
   }, []);
 
   const eliminarEmpleado = (id) => {

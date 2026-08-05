@@ -3,6 +3,8 @@ import ClienteForm from './components/ClienteForm';
 import ClienteList from './components/ClienteList';
 import DetallePedidoForm from './components/DetallePedidoForm';
 import DetallePedidoList from './components/DetallePedidoList';
+import EmpleadoList from './components/EmpleadoList';
+import FacturaList from './components/FacturaList';
 
 function App() {
   return (
@@ -16,6 +18,12 @@ function App() {
       <h2>Detalles de Pedido</h2>
       <DetallePedidoForm />
       <DetallePedidoList />
+
+      <h2>Empleados</h2>
+      <EmpleadoList />
+
+      <h2>Facturas</h2>
+      <FacturaList />
     </div>
   );
 }
