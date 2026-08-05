@@ -5,6 +5,7 @@ import DetallePedidoForm from './components/DetallePedidoForm';
 import DetallePedidoList from './components/DetallePedidoList';
 import EmpleadoList from './components/EmpleadoList';
 import FacturaList from './components/FacturaList';
+import InsumosList from './components/InsumosList';
 
 function App() {
   return (
@@ -24,6 +25,9 @@ function App() {
 
       <h2>Facturas</h2>
       <FacturaList />
+
+      <h2>Insumos</h2>
+      <InsumosList />
     </div>
   );
 }
