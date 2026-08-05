@@ -8,7 +8,9 @@ import FacturaList from './components/FacturaList';
 import InsumosList from './components/InsumosList';
 import InventarioMovimientoList from './components/InventarioMovimientoList';
 import MaterialList from './components/MaterialList';
-import PedidoList from './components/PedidoList'; // nuevo import
+import PedidoList from './components/PedidoList';
+import ProduccionList from './components/ProduccionList';
+import ReporteList from './components/ReporteList'; // nuevo import
 
 function App() {
   return (
@@ -39,7 +41,13 @@ function App() {
       <MaterialList />
 
       <h2>Pedidos</h2>
-      <PedidoList /> {/* nuevo componente */}
+      <PedidoList />
+
+      <h2>Producciones</h2>
+      <ProduccionList />
+
+      <h2>Reportes</h2>
+      <ReporteList /> {/* nuevo componente */}
     </div>
   );
 }
