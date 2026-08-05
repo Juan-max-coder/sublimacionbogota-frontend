@@ -1,0 +1,68 @@
+import React, { useState, useEffect } from 'react';
+
+function DetallePedidoForm({ detalleEditado, onSave }) {
+  const [detalle, setDetalle] = useState({
+    cantidadMaterial: "",
+    precioUnitarioMaterial: "",
+    costoManoDeObra: "",
+    subtotalPedido: "",
+    pedidoIdPedido: "",
+    materialIdMaterial: "",
+    insumosIdInsumo: ""
+  });
+
+  useEffect(() => {
+    if (detalleEditado) {
+      setDetalle(detalleEditado);
+    }
+  }, [detalleEditado]);
+
+  const handleChange = (e) => {
+    setDetalle({ ...detalle, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const method = detalle.idDetalle ? "PUT" : "POST";
+    const url = detalle.idDetalle 
+      ? `http://localhost:8080/detalles/${detalle.idDetalle}` 
+      : "http://localhost:8080/detalles";
+
+    fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(detalle)
+    })
+    .then(res => res.json())
+    .then(data => {
+      onSave(data);
+      setDetalle({
+        cantidadMaterial: "",
+        precioUnitarioMaterial: "",
+        costoManoDeObra: "",
+        subtotalPedido: "",
+        pedidoIdPedido: "",
+        materialIdMaterial: "",
+        insumosIdInsumo: ""
+      });
+    });
+  };
+
+  return (
+    <div>
+      <h2>{detalle.idDetalle ? "Editar Detalle" : "Registrar Detalle"}</h2>
+      <form onSubmit={handleSubmit}>
+        <input name="cantidadMaterial" value={detalle.cantidadMaterial} onChange={handleChange} placeholder="Cantidad Material" />
+        <input name="precioUnitarioMaterial" value={detalle.precioUnitarioMaterial} onChange={handleChange} placeholder="Precio Unitario" />
+        <input name="costoManoDeObra" value={detalle.costoManoDeObra} onChange={handleChange} placeholder="Costo Mano de Obra" />
+        <input name="subtotalPedido" value={detalle.subtotalPedido} onChange={handleChange} placeholder="Subtotal Pedido" />
+        <input name="pedidoIdPedido" value={detalle.pedidoIdPedido} onChange={handleChange} placeholder="ID Pedido" />
+        <input name="materialIdMaterial" value={detalle.materialIdMaterial} onChange={handleChange} placeholder="ID Material" />
+        <input name="insumosIdInsumo" value={detalle.insumosIdInsumo} onChange={handleChange} placeholder="ID Insumo" />
+        <button type="submit">{detalle.idDetalle ? "Actualizar" : "Guardar"}</button>
+      </form>
+    </div>
+  );
+}
+
+export default DetallePedidoForm;
