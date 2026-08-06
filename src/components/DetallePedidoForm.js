@@ -1,6 +1,8 @@
+// Formulario para registrar y editar detalles de pedido
 import React, { useState, useEffect } from 'react';
 
 function DetallePedidoForm({ detalleEditado, onSave }) {
+  // Estado inicial del formulario
   const [detalle, setDetalle] = useState({
     cantidadMaterial: "",
     precioUnitarioMaterial: "",
@@ -11,16 +13,19 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
     insumosIdInsumo: ""
   });
 
+  // Si recibo un detalle para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (detalleEditado) {
       setDetalle(detalleEditado);
     }
   }, [detalleEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setDetalle({ ...detalle, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar detalle)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = detalle.idDetalle ? "PUT" : "POST";
@@ -35,7 +40,8 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
     })
     .then(res => res.json())
     .then(data => {
-      onSave(data);
+      onSave(data); // actualizo la lista
+      // Reinicio el formulario
       setDetalle({
         cantidadMaterial: "",
         precioUnitarioMaterial: "",

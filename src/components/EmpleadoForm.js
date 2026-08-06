@@ -1,6 +1,8 @@
+// Formulario para registrar y editar empleados
 import React, { useState, useEffect } from 'react';
 
 function EmpleadoForm({ empleadoEditado, onSave }) {
+  // Estado inicial del formulario
   const [empleado, setEmpleado] = useState({
     nombreEmpleado: "",
     cargoEmpleado: "",
@@ -9,16 +11,19 @@ function EmpleadoForm({ empleadoEditado, onSave }) {
     usuarioIdUsuario: ""
   });
 
+  // Si recibo un empleado para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (empleadoEditado) {
       setEmpleado(empleadoEditado);
     }
   }, [empleadoEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setEmpleado({ ...empleado, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar empleado)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = empleado.idEmpleado ? "PUT" : "POST";
@@ -33,7 +38,8 @@ function EmpleadoForm({ empleadoEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setEmpleado({
           nombreEmpleado: "",
           cargoEmpleado: "",

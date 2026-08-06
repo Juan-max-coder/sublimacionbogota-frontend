@@ -1,6 +1,8 @@
+// Formulario para registrar y editar pedidos
 import React, { useState, useEffect } from 'react';
 
 function PedidoForm({ pedidoEditado, onSave }) {
+  // Estado inicial del formulario
   const [pedido, setPedido] = useState({
     fechaRegistroPedido: "",
     estadoPedido: "",
@@ -11,6 +13,7 @@ function PedidoForm({ pedidoEditado, onSave }) {
     empleadoIdEmpleado: ""
   });
 
+  // Si recibo un pedido para editar, convierto las fechas a formato ISO
   useEffect(() => {
     if (pedidoEditado) {
       setPedido({
@@ -25,10 +28,12 @@ function PedidoForm({ pedidoEditado, onSave }) {
     }
   }, [pedidoEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setPedido({ ...pedido, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar pedido)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = pedido.idPedido ? "PUT" : "POST";
@@ -36,6 +41,7 @@ function PedidoForm({ pedidoEditado, onSave }) {
       ? `http://localhost:8080/pedidos/${pedido.idPedido}` 
       : "http://localhost:8080/pedidos";
 
+    // Convertir fechas a objetos Date antes de enviar
     const pedidoEnviar = {
       ...pedido,
       fechaRegistroPedido: pedido.fechaRegistroPedido ? new Date(pedido.fechaRegistroPedido) : null,
@@ -49,7 +55,8 @@ function PedidoForm({ pedidoEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setPedido({
           fechaRegistroPedido: "",
           estadoPedido: "",

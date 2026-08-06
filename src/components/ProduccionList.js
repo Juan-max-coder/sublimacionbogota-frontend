@@ -1,10 +1,13 @@
+// Lista de producciones con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import ProduccionForm from './ProduccionForm';
 
 function ProduccionList() {
+  // Estado para la lista de producciones y la producción que se edita
   const [producciones, setProducciones] = useState([]);
   const [produccionEditada, setProduccionEditada] = useState(null);
 
+  // Cargar producciones desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/producciones")
       .then(res => res.json())
@@ -14,11 +17,13 @@ function ProduccionList() {
       });
   }, []);
 
+  // Eliminar producción por id
   const eliminarProduccion = (id) => {
     fetch(`http://localhost:8080/producciones/${id}`, { method: "DELETE" })
       .then(() => setProducciones(producciones.filter(p => p.idProduccion !== id)));
   };
 
+  // Guardar producción nueva o actualizada
   const guardarProduccion = (produccion) => {
     if (produccionEditada) {
       setProducciones(producciones.map(p => p.idProduccion === produccion.idProduccion ? produccion : p));
@@ -57,6 +62,7 @@ function ProduccionList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar producción */}
       <ProduccionForm produccionEditada={produccionEditada} onSave={guardarProduccion} />
     </div>
   );

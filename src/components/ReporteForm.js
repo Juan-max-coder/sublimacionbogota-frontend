@@ -1,12 +1,15 @@
+// Formulario para registrar y editar reportes
 import React, { useState, useEffect } from 'react';
 
 function ReporteForm({ reporteEditado, onSave }) {
+  // Estado inicial del formulario
   const [reporte, setReporte] = useState({
     tipoReporte: "",
     fechaReporte: "",
     usuarioIdUsuario: ""
   });
 
+  // Si recibo un reporte para editar, convierto la fecha a formato ISO
   useEffect(() => {
     if (reporteEditado) {
       setReporte({
@@ -18,10 +21,12 @@ function ReporteForm({ reporteEditado, onSave }) {
     }
   }, [reporteEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setReporte({ ...reporte, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar reporte)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = reporte.idReporte ? "PUT" : "POST";
@@ -29,6 +34,7 @@ function ReporteForm({ reporteEditado, onSave }) {
       ? `http://localhost:8080/reportes/${reporte.idReporte}` 
       : "http://localhost:8080/reportes";
 
+    // Convertir fecha a objeto Date antes de enviar
     const reporteEnviar = {
       ...reporte,
       fechaReporte: reporte.fechaReporte ? new Date(reporte.fechaReporte) : null
@@ -41,7 +47,8 @@ function ReporteForm({ reporteEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setReporte({
           tipoReporte: "",
           fechaReporte: "",

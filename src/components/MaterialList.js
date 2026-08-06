@@ -1,10 +1,13 @@
+// Lista de materiales con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import MaterialForm from './MaterialForm';
 
 function MaterialList() {
+  // Estado para la lista de materiales y el material que se edita
   const [materiales, setMateriales] = useState([]);
   const [materialEditado, setMaterialEditado] = useState(null);
 
+  // Cargar materiales desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/materiales")
       .then(res => res.json())
@@ -14,11 +17,13 @@ function MaterialList() {
       });
   }, []);
 
+  // Eliminar material por id
   const eliminarMaterial = (id) => {
     fetch(`http://localhost:8080/materiales/${id}`, { method: "DELETE" })
       .then(() => setMateriales(materiales.filter(m => m.idMaterial !== id)));
   };
 
+  // Guardar material nuevo o actualizado
   const guardarMaterial = (material) => {
     if (materialEditado) {
       setMateriales(materiales.map(m => m.idMaterial === material.idMaterial ? material : m));
@@ -59,6 +64,7 @@ function MaterialList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar material */}
       <MaterialForm materialEditado={materialEditado} onSave={guardarMaterial} />
     </div>
   );

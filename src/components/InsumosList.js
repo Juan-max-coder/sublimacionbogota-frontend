@@ -1,10 +1,13 @@
+// Lista de insumos con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import InsumosForm from './InsumosForm';
 
 function InsumosList() {
+  // Estado para la lista de insumos y el insumo que se edita
   const [insumos, setInsumos] = useState([]);
   const [insumoEditado, setInsumoEditado] = useState(null);
 
+  // Cargar insumos desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/insumos")
       .then(res => res.json())
@@ -14,11 +17,13 @@ function InsumosList() {
       });
   }, []);
 
+  // Eliminar insumo por id
   const eliminarInsumo = (id) => {
     fetch(`http://localhost:8080/insumos/${id}`, { method: "DELETE" })
       .then(() => setInsumos(insumos.filter(i => i.idInsumo !== id)));
   };
 
+  // Guardar insumo nuevo o actualizado
   const guardarInsumo = (insumo) => {
     if (insumoEditado) {
       setInsumos(insumos.map(i => i.idInsumo === insumo.idInsumo ? insumo : i));
@@ -59,6 +64,7 @@ function InsumosList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar insumo */}
       <InsumosForm insumoEditado={insumoEditado} onSave={guardarInsumo} />
     </div>
   );

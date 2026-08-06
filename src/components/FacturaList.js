@@ -1,10 +1,13 @@
+// Lista de facturas con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import FacturaForm from './FacturaForm';
 
 function FacturaList() {
+  // Estado para la lista de facturas y la factura que se edita
   const [facturas, setFacturas] = useState([]);
   const [facturaEditada, setFacturaEditada] = useState(null);
 
+  // Cargar facturas desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/facturas")
       .then(res => res.json())
@@ -14,11 +17,13 @@ function FacturaList() {
       });
   }, []);
 
+  // Eliminar factura por id
   const eliminarFactura = (id) => {
     fetch(`http://localhost:8080/facturas/${id}`, { method: "DELETE" })
       .then(() => setFacturas(facturas.filter(f => f.idFactura !== id)));
   };
 
+  // Guardar factura nueva o actualizada
   const guardarFactura = (factura) => {
     if (facturaEditada) {
       setFacturas(facturas.map(f => f.idFactura === factura.idFactura ? factura : f));
@@ -57,6 +62,7 @@ function FacturaList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar factura */}
       <FacturaForm facturaEditada={facturaEditada} onSave={guardarFactura} />
     </div>
   );

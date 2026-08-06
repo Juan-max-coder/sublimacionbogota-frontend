@@ -1,21 +1,26 @@
+// Lista de clientes con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import ClienteForm from './ClienteForm';
 
 function ClienteList() {
+  // Estado para la lista de clientes y el cliente que se edita
   const [clientes, setClientes] = useState([]);
   const [clienteEditado, setClienteEditado] = useState(null);
 
+  // Cargar clientes desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/clientes")
       .then(res => res.json())
       .then(data => setClientes(data));
   }, []);
 
+  // Eliminar cliente por id
   const eliminarCliente = (id) => {
     fetch(`http://localhost:8080/clientes/${id}`, { method: "DELETE" })
       .then(() => setClientes(clientes.filter(c => c.idCliente !== id)));
   };
 
+  // Guardar cliente nuevo o actualizado
   const guardarCliente = (cliente) => {
     if (clienteEditado) {
       setClientes(clientes.map(c => c.idCliente === cliente.idCliente ? cliente : c));
@@ -58,6 +63,7 @@ function ClienteList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar cliente */}
       <ClienteForm clienteEditado={clienteEditado} onSave={guardarCliente} />
     </div>
   );

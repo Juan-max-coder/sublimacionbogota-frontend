@@ -1,6 +1,8 @@
+// Formulario para registrar y editar materiales
 import React, { useState, useEffect } from 'react';
 
 function MaterialForm({ materialEditado, onSave }) {
+  // Estado inicial del formulario
   const [material, setMaterial] = useState({
     nombreMaterial: "",
     tipoMaterial: "",
@@ -9,16 +11,19 @@ function MaterialForm({ materialEditado, onSave }) {
     clienteIdCliente: ""
   });
 
+  // Si recibo un material para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (materialEditado) {
       setMaterial(materialEditado);
     }
   }, [materialEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setMaterial({ ...material, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar material)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = material.idMaterial ? "PUT" : "POST";
@@ -33,7 +38,8 @@ function MaterialForm({ materialEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setMaterial({
           nombreMaterial: "",
           tipoMaterial: "",

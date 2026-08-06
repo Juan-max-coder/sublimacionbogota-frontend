@@ -1,6 +1,8 @@
+// Formulario para registrar y editar facturas
 import React, { useState, useEffect } from 'react';
 
 function FacturaForm({ facturaEditada, onSave }) {
+  // Estado inicial del formulario
   const [factura, setFactura] = useState({
     estadoFactura: "",
     fechaExportacionFactura: "",
@@ -8,9 +10,9 @@ function FacturaForm({ facturaEditada, onSave }) {
     pedidoIdPedido: ""
   });
 
+  // Si recibo una factura para editar, convierto las fechas a formato ISO
   useEffect(() => {
     if (facturaEditada) {
-      // Convertir fechas a formato ISO para inputs tipo datetime-local
       setFactura({
         ...facturaEditada,
         fechaExportacionFactura: facturaEditada.fechaExportacionFactura
@@ -23,10 +25,12 @@ function FacturaForm({ facturaEditada, onSave }) {
     }
   }, [facturaEditada]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setFactura({ ...factura, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar factura)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = factura.idFactura ? "PUT" : "POST";
@@ -48,7 +52,8 @@ function FacturaForm({ facturaEditada, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setFactura({
           estadoFactura: "",
           fechaExportacionFactura: "",

@@ -1,10 +1,13 @@
+// Lista de empleados con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import EmpleadoForm from './EmpleadoForm';
 
 function EmpleadoList() {
+  // Estado para la lista de empleados y el empleado que se edita
   const [empleados, setEmpleados] = useState([]);
   const [empleadoEditado, setEmpleadoEditado] = useState(null);
 
+  // Cargar empleados desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/empleados")
       .then(res => res.json())
@@ -14,11 +17,13 @@ function EmpleadoList() {
       });
   }, []);
 
+  // Eliminar empleado por id
   const eliminarEmpleado = (id) => {
     fetch(`http://localhost:8080/empleados/${id}`, { method: "DELETE" })
       .then(() => setEmpleados(empleados.filter(e => e.idEmpleado !== id)));
   };
 
+  // Guardar empleado nuevo o actualizado
   const guardarEmpleado = (empleado) => {
     if (empleadoEditado) {
       setEmpleados(empleados.map(e => e.idEmpleado === empleado.idEmpleado ? empleado : e));
@@ -59,6 +64,7 @@ function EmpleadoList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar empleado */}
       <EmpleadoForm empleadoEditado={empleadoEditado} onSave={guardarEmpleado} />
     </div>
   );

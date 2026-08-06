@@ -1,6 +1,8 @@
+// Formulario para registrar y editar clientes
 import React, { useState, useEffect } from 'react';
 
 function ClienteForm({ clienteEditado, onSave }) {
+  // Estado inicial del formulario
   const [cliente, setCliente] = useState({
     nombreCliente: "",
     apellidoCliente: "",
@@ -10,16 +12,19 @@ function ClienteForm({ clienteEditado, onSave }) {
     tipoCliente: ""
   });
 
+  // Si recibo un cliente para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (clienteEditado) {
       setCliente(clienteEditado);
     }
   }, [clienteEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar cliente)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = cliente.idCliente ? "PUT" : "POST";
@@ -34,7 +39,8 @@ function ClienteForm({ clienteEditado, onSave }) {
     })
     .then(res => res.json())
     .then(data => {
-      onSave(data);
+      onSave(data); // actualizo la lista
+      // Reinicio el formulario
       setCliente({
         nombreCliente: "",
         apellidoCliente: "",

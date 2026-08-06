@@ -1,6 +1,8 @@
+// Formulario para registrar y editar producciones
 import React, { useState, useEffect } from 'react';
 
 function ProduccionForm({ produccionEditada, onSave }) {
+  // Estado inicial del formulario
   const [produccion, setProduccion] = useState({
     fechaInicioProduccion: "",
     fechaFinProduccion: "",
@@ -8,6 +10,7 @@ function ProduccionForm({ produccionEditada, onSave }) {
     pedidoIdPedido: ""
   });
 
+  // Si recibo una producción para editar, convierto las fechas a formato ISO
   useEffect(() => {
     if (produccionEditada) {
       setProduccion({
@@ -22,10 +25,12 @@ function ProduccionForm({ produccionEditada, onSave }) {
     }
   }, [produccionEditada]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setProduccion({ ...produccion, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar producción)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = produccion.idProduccion ? "PUT" : "POST";
@@ -33,6 +38,7 @@ function ProduccionForm({ produccionEditada, onSave }) {
       ? `http://localhost:8080/producciones/${produccion.idProduccion}` 
       : "http://localhost:8080/producciones";
 
+    // Convertir fechas a objetos Date antes de enviar
     const produccionEnviar = {
       ...produccion,
       fechaInicioProduccion: produccion.fechaInicioProduccion ? new Date(produccion.fechaInicioProduccion) : null,
@@ -46,7 +52,8 @@ function ProduccionForm({ produccionEditada, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setProduccion({
           fechaInicioProduccion: "",
           fechaFinProduccion: "",

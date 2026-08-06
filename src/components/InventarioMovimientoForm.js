@@ -1,22 +1,27 @@
+// Formulario para registrar y editar movimientos de inventario
 import React, { useState, useEffect } from 'react';
 
 function InventarioMovimientoForm({ movimientoEditado, onSave }) {
+  // Estado inicial del formulario
   const [movimiento, setMovimiento] = useState({
     tipoMovimiento: "",
     cantidadDelMovimiento: "",
     detallesDelMaterialEnMovimiento: ""
   });
 
+  // Si recibo un movimiento para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (movimientoEditado) {
       setMovimiento(movimientoEditado);
     }
   }, [movimientoEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setMovimiento({ ...movimiento, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar movimiento)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = movimiento.idMovimiento ? "PUT" : "POST";
@@ -31,7 +36,8 @@ function InventarioMovimientoForm({ movimientoEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setMovimiento({
           tipoMovimiento: "",
           cantidadDelMovimiento: "",

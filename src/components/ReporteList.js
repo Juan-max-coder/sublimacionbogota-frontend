@@ -1,10 +1,13 @@
+// Lista de reportes con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import ReporteForm from './ReporteForm';
 
 function ReporteList() {
+  // Estado para la lista de reportes y el reporte que se edita
   const [reportes, setReportes] = useState([]);
   const [reporteEditado, setReporteEditado] = useState(null);
 
+  // Cargar reportes desde el backend al iniciar
   useEffect(() => {
     fetch("http://localhost:8080/reportes")
       .then(res => res.json())
@@ -14,11 +17,13 @@ function ReporteList() {
       });
   }, []);
 
+  // Eliminar reporte por id
   const eliminarReporte = (id) => {
     fetch(`http://localhost:8080/reportes/${id}`, { method: "DELETE" })
       .then(() => setReportes(reportes.filter(r => r.idReporte !== id)));
   };
 
+  // Guardar reporte nuevo o actualizado
   const guardarReporte = (reporte) => {
     if (reporteEditado) {
       setReportes(reportes.map(r => r.idReporte === reporte.idReporte ? reporte : r));
@@ -55,6 +60,7 @@ function ReporteList() {
         </tbody>
       </table>
 
+      {/* Formulario para crear o editar reporte */}
       <ReporteForm reporteEditado={reporteEditado} onSave={guardarReporte} />
     </div>
   );

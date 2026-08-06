@@ -1,6 +1,8 @@
+// Formulario para registrar y editar insumos
 import React, { useState, useEffect } from 'react';
 
 function InsumosForm({ insumoEditado, onSave }) {
+  // Estado inicial del formulario
   const [insumo, setInsumo] = useState({
     nombreInsumo: "",
     costoInsumo: "",
@@ -9,16 +11,19 @@ function InsumosForm({ insumoEditado, onSave }) {
     inventarioMovimientoIdMovimiento: ""
   });
 
+  // Si recibo un insumo para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (insumoEditado) {
       setInsumo(insumoEditado);
     }
   }, [insumoEditado]);
 
+  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setInsumo({ ...insumo, [e.target.name]: e.target.value });
   };
 
+  // Envío del formulario (crear o actualizar insumo)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = insumo.idInsumo ? "PUT" : "POST";
@@ -33,7 +38,8 @@ function InsumosForm({ insumoEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data);
+        onSave(data); // actualizo la lista
+        // Reinicio el formulario
         setInsumo({
           nombreInsumo: "",
           costoInsumo: "",
