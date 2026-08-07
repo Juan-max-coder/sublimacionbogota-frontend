@@ -1,4 +1,6 @@
+// Formulario para registrar y editar tareas de producción
 import React, { useState, useEffect } from 'react';
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 function TareaProduccionForm({ tareaEditada, onSave }) {
   const [tarea, setTarea] = useState({
@@ -45,17 +47,21 @@ function TareaProduccionForm({ tareaEditada, onSave }) {
   };
 
   return (
-    <div>
-      <h2>{tarea.idTarea ? "Editar Tarea" : "Registrar Tarea"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="descripcionTarea" value={tarea.descripcionTarea} onChange={handleChange} placeholder="Descripción" required />
-        <input name="estadoTarea" value={tarea.estadoTarea} onChange={handleChange} placeholder="Estado" required />
-        <input type="number" name="avanceTarea" value={tarea.avanceTarea} onChange={handleChange} placeholder="Avance (%)" required />
-        <input name="empleadoIdEmpleado" value={tarea.empleadoIdEmpleado} onChange={handleChange} placeholder="ID Empleado" required />
-        <input name="produccionIdProduccion" value={tarea.produccionIdProduccion} onChange={handleChange} placeholder="ID Producción" required />
-        <button type="submit">{tarea.idTarea ? "Actualizar" : "Guardar"}</button>
-      </form>
-    </div>
+    <Paper sx={{ p: 3, borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #ffffff, #f0f0f0)" }}>
+      <h2 style={{ marginBottom: "20px" }}>
+        {tarea.idTarea ? "Editar Tarea" : "Registrar Tarea"}
+      </h2>
+      <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <TextField name="descripcionTarea" value={tarea.descripcionTarea} onChange={handleChange} label="Descripción" required />
+        <TextField name="estadoTarea" value={tarea.estadoTarea} onChange={handleChange} label="Estado" required />
+        <TextField type="number" name="avanceTarea" value={tarea.avanceTarea} onChange={handleChange} label="Avance (%)" required />
+        <TextField name="empleadoIdEmpleado" value={tarea.empleadoIdEmpleado} onChange={handleChange} label="ID Empleado" required />
+        <TextField name="produccionIdProduccion" value={tarea.produccionIdProduccion} onChange={handleChange} label="ID Producción" required />
+        <Button type="submit" variant="contained" sx={{ mt: 2, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", fontWeight: "bold", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }}>
+          {tarea.idTarea ? "Actualizar" : "Guardar"}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 

@@ -1,8 +1,8 @@
 // Formulario para registrar y editar producciones
 import React, { useState, useEffect } from 'react';
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 function ProduccionForm({ produccionEditada, onSave }) {
-  // Estado inicial del formulario
   const [produccion, setProduccion] = useState({
     fechaInicioProduccion: "",
     fechaFinProduccion: "",
@@ -10,7 +10,6 @@ function ProduccionForm({ produccionEditada, onSave }) {
     pedidoIdPedido: ""
   });
 
-  // Si recibo una producción para editar, convierto las fechas a formato ISO
   useEffect(() => {
     if (produccionEditada) {
       setProduccion({
@@ -25,12 +24,10 @@ function ProduccionForm({ produccionEditada, onSave }) {
     }
   }, [produccionEditada]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setProduccion({ ...produccion, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar producción)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = produccion.idProduccion ? "PUT" : "POST";
@@ -38,7 +35,6 @@ function ProduccionForm({ produccionEditada, onSave }) {
       ? `http://localhost:8080/producciones/${produccion.idProduccion}` 
       : "http://localhost:8080/producciones";
 
-    // Convertir fechas a objetos Date antes de enviar
     const produccionEnviar = {
       ...produccion,
       fechaInicioProduccion: produccion.fechaInicioProduccion ? new Date(produccion.fechaInicioProduccion) : null,
@@ -52,8 +48,7 @@ function ProduccionForm({ produccionEditada, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data); // actualizo la lista
-        // Reinicio el formulario
+        onSave(data);
         setProduccion({
           fechaInicioProduccion: "",
           fechaFinProduccion: "",
@@ -64,16 +59,20 @@ function ProduccionForm({ produccionEditada, onSave }) {
   };
 
   return (
-    <div>
-      <h2>{produccion.idProduccion ? "Editar Producción" : "Registrar Producción"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="datetime-local" name="fechaInicioProduccion" value={produccion.fechaInicioProduccion} onChange={handleChange} />
-        <input type="datetime-local" name="fechaFinProduccion" value={produccion.fechaFinProduccion} onChange={handleChange} />
-        <input name="estadoProduccion" value={produccion.estadoProduccion} onChange={handleChange} placeholder="Estado" required />
-        <input name="pedidoIdPedido" value={produccion.pedidoIdPedido} onChange={handleChange} placeholder="ID Pedido" required />
-        <button type="submit">{produccion.idProduccion ? "Actualizar" : "Guardar"}</button>
-      </form>
-    </div>
+    <Paper sx={{ p: 3, borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #ffffff, #f0f0f0)" }}>
+      <h2 style={{ marginBottom: "20px" }}>
+        {produccion.idProduccion ? "Editar Producción" : "Registrar Producción"}
+      </h2>
+      <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <TextField type="datetime-local" name="fechaInicioProduccion" value={produccion.fechaInicioProduccion} onChange={handleChange} label="Fecha Inicio" InputLabelProps={{ shrink: true }} />
+        <TextField type="datetime-local" name="fechaFinProduccion" value={produccion.fechaFinProduccion} onChange={handleChange} label="Fecha Fin" InputLabelProps={{ shrink: true }} />
+        <TextField name="estadoProduccion" value={produccion.estadoProduccion} onChange={handleChange} label="Estado" required />
+        <TextField name="pedidoIdPedido" value={produccion.pedidoIdPedido} onChange={handleChange} label="ID Pedido" required />
+        <Button type="submit" variant="contained" sx={{ mt: 2, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", fontWeight: "bold", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }}>
+          {produccion.idProduccion ? "Actualizar" : "Guardar"}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 

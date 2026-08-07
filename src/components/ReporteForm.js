@@ -1,15 +1,14 @@
 // Formulario para registrar y editar reportes
 import React, { useState, useEffect } from 'react';
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 function ReporteForm({ reporteEditado, onSave }) {
-  // Estado inicial del formulario
   const [reporte, setReporte] = useState({
     tipoReporte: "",
     fechaReporte: "",
     usuarioIdUsuario: ""
   });
 
-  // Si recibo un reporte para editar, convierto la fecha a formato ISO
   useEffect(() => {
     if (reporteEditado) {
       setReporte({
@@ -21,12 +20,10 @@ function ReporteForm({ reporteEditado, onSave }) {
     }
   }, [reporteEditado]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setReporte({ ...reporte, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar reporte)
   const handleSubmit = (e) => {
     e.preventDefault();
     const method = reporte.idReporte ? "PUT" : "POST";
@@ -34,7 +31,6 @@ function ReporteForm({ reporteEditado, onSave }) {
       ? `http://localhost:8080/reportes/${reporte.idReporte}` 
       : "http://localhost:8080/reportes";
 
-    // Convertir fecha a objeto Date antes de enviar
     const reporteEnviar = {
       ...reporte,
       fechaReporte: reporte.fechaReporte ? new Date(reporte.fechaReporte) : null
@@ -47,8 +43,7 @@ function ReporteForm({ reporteEditado, onSave }) {
     })
       .then(res => res.json())
       .then(data => {
-        onSave(data); // actualizo la lista
-        // Reinicio el formulario
+        onSave(data);
         setReporte({
           tipoReporte: "",
           fechaReporte: "",
@@ -58,15 +53,19 @@ function ReporteForm({ reporteEditado, onSave }) {
   };
 
   return (
-    <div>
-      <h2>{reporte.idReporte ? "Editar Reporte" : "Registrar Reporte"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="tipoReporte" value={reporte.tipoReporte} onChange={handleChange} placeholder="Tipo de Reporte" required />
-        <input type="datetime-local" name="fechaReporte" value={reporte.fechaReporte} onChange={handleChange} />
-        <input name="usuarioIdUsuario" value={reporte.usuarioIdUsuario} onChange={handleChange} placeholder="ID Usuario" required />
-        <button type="submit">{reporte.idReporte ? "Actualizar" : "Guardar"}</button>
-      </form>
-    </div>
+    <Paper sx={{ p: 3, borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #ffffff, #f0f0f0)" }}>
+      <h2 style={{ marginBottom: "20px" }}>
+        {reporte.idReporte ? "Editar Reporte" : "Registrar Reporte"}
+      </h2>
+      <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <TextField name="tipoReporte" value={reporte.tipoReporte} onChange={handleChange} label="Tipo de Reporte" required />
+        <TextField type="datetime-local" name="fechaReporte" value={reporte.fechaReporte} onChange={handleChange} label="Fecha" InputLabelProps={{ shrink: true }} />
+        <TextField name="usuarioIdUsuario" value={reporte.usuarioIdUsuario} onChange={handleChange} label="ID Usuario" required />
+        <Button type="submit" variant="contained" sx={{ mt: 2, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", fontWeight: "bold", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }}>
+          {reporte.idReporte ? "Actualizar" : "Guardar"}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 

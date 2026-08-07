@@ -1,4 +1,6 @@
+// Formulario para registrar y editar usuarios
 import React, { useState, useEffect } from 'react';
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 function UsuarioForm({ usuarioEditado, onSave }) {
   const [usuario, setUsuario] = useState({
@@ -45,17 +47,21 @@ function UsuarioForm({ usuarioEditado, onSave }) {
   };
 
   return (
-    <div>
-      <h2>{usuario.idUsuario ? "Editar Usuario" : "Registrar Usuario"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="nombreUsuario" value={usuario.nombreUsuario} onChange={handleChange} placeholder="Nombre" required />
-        <input name="apellidoUsuario" value={usuario.apellidoUsuario} onChange={handleChange} placeholder="Apellido" required />
-        <input type="email" name="correoUsuario" value={usuario.correoUsuario} onChange={handleChange} placeholder="Correo" required />
-        <input type="password" name="contrasenaUsuario" value={usuario.contrasenaUsuario} onChange={handleChange} placeholder="Contraseña" required />
-        <input name="rolUsuario" value={usuario.rolUsuario} onChange={handleChange} placeholder="Rol" required />
-        <button type="submit">{usuario.idUsuario ? "Actualizar" : "Guardar"}</button>
-      </form>
-    </div>
+    <Paper sx={{ p: 3, borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #ffffff, #f0f0f0)" }}>
+      <h2 style={{ marginBottom: "20px" }}>
+        {usuario.idUsuario ? "Editar Usuario" : "Registrar Usuario"}
+      </h2>
+      <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <TextField name="nombreUsuario" value={usuario.nombreUsuario} onChange={handleChange} label="Nombre" required />
+        <TextField name="apellidoUsuario" value={usuario.apellidoUsuario} onChange={handleChange} label="Apellido" required />
+        <TextField type="email" name="correoUsuario" value={usuario.correoUsuario} onChange={handleChange} label="Correo" required />
+        <TextField type="password" name="contrasenaUsuario" value={usuario.contrasenaUsuario} onChange={handleChange} label="Contraseña" required />
+        <TextField name="rolUsuario" value={usuario.rolUsuario} onChange={handleChange} label="Rol" required />
+        <Button type="submit" variant="contained" sx={{ mt: 2, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", fontWeight: "bold", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }}>
+          {usuario.idUsuario ? "Actualizar" : "Guardar"}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 

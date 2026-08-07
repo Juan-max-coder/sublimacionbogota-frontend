@@ -1,5 +1,6 @@
 // Formulario para registrar y editar facturas
 import React, { useState, useEffect } from 'react';
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 function FacturaForm({ facturaEditada, onSave }) {
   // Estado inicial del formulario
@@ -64,16 +65,38 @@ function FacturaForm({ facturaEditada, onSave }) {
   };
 
   return (
-    <div>
-      <h2>{factura.idFactura ? "Editar Factura" : "Registrar Factura"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input name="estadoFactura" value={factura.estadoFactura} onChange={handleChange} placeholder="Estado" required />
-        <input type="datetime-local" name="fechaExportacionFactura" value={factura.fechaExportacionFactura} onChange={handleChange} />
-        <input type="datetime-local" name="fechaConfirmacionFactura" value={factura.fechaConfirmacionFactura} onChange={handleChange} />
-        <input name="pedidoIdPedido" value={factura.pedidoIdPedido} onChange={handleChange} placeholder="ID Pedido" required />
-        <button type="submit">{factura.idFactura ? "Actualizar" : "Guardar"}</button>
-      </form>
-    </div>
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: "16px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+      }}
+    >
+      <h2 style={{ marginBottom: "20px" }}>
+        {factura.idFactura ? "Editar Factura" : "Registrar Factura"}
+      </h2>
+      <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <TextField name="estadoFactura" value={factura.estadoFactura} onChange={handleChange} label="Estado" variant="outlined" required />
+        <TextField type="datetime-local" name="fechaExportacionFactura" value={factura.fechaExportacionFactura} onChange={handleChange} label="Fecha Exportación" InputLabelProps={{ shrink: true }} />
+        <TextField type="datetime-local" name="fechaConfirmacionFactura" value={factura.fechaConfirmacionFactura} onChange={handleChange} label="Fecha Confirmación" InputLabelProps={{ shrink: true }} />
+        <TextField name="pedidoIdPedido" value={factura.pedidoIdPedido} onChange={handleChange} label="ID Pedido" variant="outlined" required />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            mt: 2,
+            borderRadius: "8px",
+            background: "linear-gradient(90deg, #1abc9c, #16a085)",
+            color: "#fff",
+            fontWeight: "bold",
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+          }}
+        >
+          {factura.idFactura ? "Actualizar" : "Guardar"}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 

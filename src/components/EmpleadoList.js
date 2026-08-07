@@ -1,6 +1,10 @@
 // Lista de empleados con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import EmpleadoForm from './EmpleadoForm';
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Button
+} from "@mui/material";
 
 function EmpleadoList() {
   // Estado para la lista de empleados y el empleado que se edita
@@ -35,37 +39,77 @@ function EmpleadoList() {
 
   return (
     <div>
-      <h2>Lista de Empleados</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Cargo</th>
-            <th>Área</th>
-            <th>Contacto</th>
-            <th>ID Usuario</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {empleados.map(e => (
-            <tr key={e.idEmpleado}>
-              <td>{e.nombreEmpleado}</td>
-              <td>{e.cargoEmpleado}</td>
-              <td>{e.areaEmpleado}</td>
-              <td>{e.contactoEmpleado}</td>
-              <td>{e.usuarioIdUsuario}</td>
-              <td>
-                <button onClick={() => setEmpleadoEditado(e)}>Editar</button>
-                <button onClick={() => eliminarEmpleado(e.idEmpleado)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 style={{ marginBottom: "20px" }}>Lista de Empleados</h2>
+
+      {/* Tabla estilizada con Material UI */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)"
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#2c3e50" }}>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Nombre</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Cargo</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Área</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Contacto</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>ID Usuario</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {empleados.map(e => (
+              <TableRow
+                key={e.idEmpleado}
+                hover
+                sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
+              >
+                <TableCell>{e.nombreEmpleado}</TableCell>
+                <TableCell>{e.cargoEmpleado}</TableCell>
+                <TableCell>{e.areaEmpleado}</TableCell>
+                <TableCell>{e.contactoEmpleado}</TableCell>
+                <TableCell>{e.usuarioIdUsuario}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      mr: 1,
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #1abc9c, #16a085)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+                    }}
+                    onClick={() => setEmpleadoEditado(e)}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #e74c3c, #c0392b)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" }
+                    }}
+                    onClick={() => eliminarEmpleado(e.idEmpleado)}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* Formulario para crear o editar empleado */}
-      <EmpleadoForm empleadoEditado={empleadoEditado} onSave={guardarEmpleado} />
+      <div style={{ marginTop: "30px" }}>
+        <EmpleadoForm empleadoEditado={empleadoEditado} onSave={guardarEmpleado} />
+      </div>
     </div>
   );
 }

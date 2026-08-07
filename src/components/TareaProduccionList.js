@@ -1,5 +1,7 @@
+// Lista de tareas de producción con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import TareaProduccionForm from './TareaProduccionForm';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
 
 function TareaProduccionList() {
   const [tareas, setTareas] = useState([]);
@@ -8,10 +10,7 @@ function TareaProduccionList() {
   useEffect(() => {
     fetch("http://localhost:8080/tareas")
       .then(res => res.json())
-      .then(data => {
-        console.log("Tareas recibidas:", data);
-        setTareas(data);
-      });
+      .then(data => setTareas(data));
   }, []);
 
   const eliminarTarea = (id) => {
@@ -30,36 +29,45 @@ function TareaProduccionList() {
 
   return (
     <div>
-      <h2>Lista de Tareas de Producción</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Descripción</th>
-            <th>Estado</th>
-            <th>Avance (%)</th>
-            <th>ID Empleado</th>
-            <th>ID Producción</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tareas.map(t => (
-            <tr key={t.idTarea}>
-              <td>{t.descripcionTarea}</td>
-              <td>{t.estadoTarea}</td>
-              <td>{t.avanceTarea}</td>
-              <td>{t.empleadoIdEmpleado}</td>
-              <td>{t.produccionIdProduccion}</td>
-              <td>
-                <button onClick={() => setTareaEditada(t)}>Editar</button>
-                <button onClick={() => eliminarTarea(t.idTarea)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 style={{ marginBottom: "20px" }}>Lista de Tareas de Producción</h2>
+      <TableContainer component={Paper} sx={{ borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #fdfbfb, #ebedee)" }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#2c3e50" }}>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Descripción</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Estado</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Avance (%)</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>ID Empleado</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>ID Producción</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tareas.map(t => (
+              <TableRow key={t.idTarea} hover sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}>
+                <TableCell>{t.descripcionTarea}</TableCell>
+                <TableCell>{t.estadoTarea}</TableCell>
+                <TableCell>{t.avanceTarea}</TableCell>
+                <TableCell>{t.empleadoIdEmpleado}</TableCell>
+                <TableCell>{t.produccionIdProduccion}</TableCell>
+                <TableCell>
+                  <Button variant="contained" sx={{ mr: 1, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }} onClick={() => setTareaEditada(t)}>
+                    Editar
+                  </Button>
+                  <Button variant="contained" sx={{ borderRadius: "8px", background: "linear-gradient(90deg, #e74c3c, #c0392b)", color: "#fff", "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" } }} onClick={() => eliminarTarea(t.idTarea)}>
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      <TareaProduccionForm tareaEditada={tareaEditada} onSave={guardarTarea} />
+      {/* Formulario para crear o editar tarea */}
+      <div style={{ marginTop: "30px" }}>
+        <TareaProduccionForm tareaEditada={tareaEditada} onSave={guardarTarea} />
+      </div>
     </div>
   );
 }

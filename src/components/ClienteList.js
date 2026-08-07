@@ -1,6 +1,10 @@
 // Lista de clientes con opciones de editar y eliminar
 import React, { useEffect, useState } from 'react';
 import ClienteForm from './ClienteForm';
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Button
+} from "@mui/material";
 
 function ClienteList() {
   // Estado para la lista de clientes y el cliente que se edita
@@ -32,39 +36,79 @@ function ClienteList() {
 
   return (
     <div>
-      <h2>Lista de Clientes</h2>
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Correo</th>
-            <th>Tipo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {clientes.map(c => (
-            <tr key={c.idCliente}>
-              <td>{c.nombreCliente}</td>
-              <td>{c.apellidoCliente}</td>
-              <td>{c.direccionCliente}</td>
-              <td>{c.telefonoCliente}</td>
-              <td>{c.correoCliente}</td>
-              <td>{c.tipoCliente}</td>
-              <td>
-                <button onClick={() => setClienteEditado(c)}>Editar</button>
-                <button onClick={() => eliminarCliente(c.idCliente)}>Eliminar</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h2 style={{ marginBottom: "20px" }}>Lista de Clientes</h2>
+
+      {/* Tabla estilizada con Material UI */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)"
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: "#2c3e50" }}>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Nombre</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Apellido</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Dirección</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Teléfono</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Correo</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Tipo</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: "bold" }}>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {clientes.map(c => (
+              <TableRow
+                key={c.idCliente}
+                hover
+                sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
+              >
+                <TableCell>{c.nombreCliente}</TableCell>
+                <TableCell>{c.apellidoCliente}</TableCell>
+                <TableCell>{c.direccionCliente}</TableCell>
+                <TableCell>{c.telefonoCliente}</TableCell>
+                <TableCell>{c.correoCliente}</TableCell>
+                <TableCell>{c.tipoCliente}</TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      mr: 1,
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #1abc9c, #16a085)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+                    }}
+                    onClick={() => setClienteEditado(c)}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #e74c3c, #c0392b)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" }
+                    }}
+                    onClick={() => eliminarCliente(c.idCliente)}
+                  >
+                    Eliminar
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* Formulario para crear o editar cliente */}
-      <ClienteForm clienteEditado={clienteEditado} onSave={guardarCliente} />
+      <div style={{ marginTop: "30px" }}>
+        <ClienteForm clienteEditado={clienteEditado} onSave={guardarCliente} />
+      </div>
     </div>
   );
 }

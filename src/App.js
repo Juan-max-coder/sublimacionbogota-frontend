@@ -1,82 +1,87 @@
-import React from 'react';
-import ClienteForm from './components/ClienteForm';
-import ClienteList from './components/ClienteList';
-import DetallePedidoForm from './components/DetallePedidoForm';
-import DetallePedidoList from './components/DetallePedidoList';
-import EmpleadoForm from './components/EmpleadoForm';
-import EmpleadoList from './components/EmpleadoList';
-import FacturaForm from './components/FacturaForm';
-import FacturaList from './components/FacturaList';
-import InsumosForm from './components/InsumosForm';
-import InsumosList from './components/InsumosList';
-import InventarioMovimientoForm from './components/InventarioMovimientoForm';
-import InventarioMovimientoList from './components/InventarioMovimientoList';
-import MaterialForm from './components/MaterialForm';
-import MaterialList from './components/MaterialList';
-import PedidoForm from './components/PedidoForm';
-import PedidoList from './components/PedidoList';
-import ProduccionForm from './components/ProduccionForm';
-import ProduccionList from './components/ProduccionList';
-import ReporteForm from './components/ReporteForm';
-import ReporteList from './components/ReporteList';
-import TareaProduccionForm from './components/TareaProduccionForm';
-import TareaProduccionList from './components/TareaProduccionList';
-import UsuarioForm from './components/UsuarioForm';
-import UsuarioList from './components/UsuarioList';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Box } from "@mui/material"; // usamos Box de Material UI
+import Sidebar from "./components/Sidebar";
+import Home from "./components/Home";
+
+// Importa los módulos
+import ClienteList from "./components/ClienteList";
+import DetallePedidoList from "./components/DetallePedidoList";
+import EmpleadoList from "./components/EmpleadoList";
+import FacturaList from "./components/FacturaList";
+import InsumosList from "./components/InsumosList";
+import InventarioMovimientoList from "./components/InventarioMovimientoList";
+import MaterialList from "./components/MaterialList";
+import PedidoList from "./components/PedidoList";
+import ProduccionList from "./components/ProduccionList";
+import ReporteList from "./components/ReporteList";
+import TareaProduccionList from "./components/TareaProduccionList";
+import UsuarioList from "./components/UsuarioList";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Sublimación Bogotá - Frontend</h1>
-      
-      <h2>Clientes</h2>
-      <ClienteForm />
-      <ClienteList />
+    <Router>
+      <div style={{ display: "flex" }}>
+        {/* Sidebar fijo a la izquierda */}
+        <Sidebar />
 
-      <h2>Detalles de Pedido</h2>
-      <DetallePedidoForm />
-      <DetallePedidoList />
+        {/* Contenido principal con degradé y burbujas */}
+        <Box
+          sx={{
+            flex: 1,
+            padding: "20px",
+            minHeight: "100vh",
+            background: "linear-gradient(135deg, #69ffb2, #56effa, #447df8)", // 🎨 degradé diagonal cálido
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* burbuja arriba izquierda */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: "-60px",
+              left: "-60px",
+              width: "200px",
+              height: "200px",
+              background: "rgba(255,255,255,0.25)",
+              borderRadius: "50%",
+              filter: "blur(40px)",
+            }}
+          />
+          {/* burbuja abajo derecha */}
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: "-60px",
+              right: "-60px",
+              width: "200px",
+              height: "200px",
+              background: "rgba(255,255,255,0.25)",
+              borderRadius: "50%",
+              filter: "blur(40px)",
+            }}
+          />
 
-      <h2>Empleados</h2>
-      <EmpleadoForm />
-      <EmpleadoList />
-
-      <h2>Facturas</h2>
-      <FacturaForm />
-      <FacturaList />
-
-      <h2>Insumos</h2>
-      <InsumosForm />
-      <InsumosList />
-
-      <h2>Movimientos de Inventario</h2>
-      <InventarioMovimientoForm />
-      <InventarioMovimientoList />
-
-      <h2>Materiales</h2>
-      <MaterialForm />
-      <MaterialList />
-
-      <h2>Pedidos</h2>
-      <PedidoForm />
-      <PedidoList />
-
-      <h2>Producciones</h2>
-      <ProduccionForm />
-      <ProduccionList />
-
-      <h2>Reportes</h2>
-      <ReporteForm />
-      <ReporteList />
-
-      <h2>Tareas de Producción</h2>
-      <TareaProduccionForm />
-      <TareaProduccionList />
-
-      <h2>Usuarios</h2>
-      <UsuarioForm />
-      <UsuarioList />
-    </div>
+          {/* Rutas */}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/clientes" element={<ClienteList />} />
+            <Route path="/detalles" element={<DetallePedidoList />} />
+            <Route path="/empleados" element={<EmpleadoList />} />
+            <Route path="/facturas" element={<FacturaList />} />
+            <Route path="/insumos" element={<InsumosList />} />
+            <Route path="/movimientos" element={<InventarioMovimientoList />} />
+            <Route path="/materiales" element={<MaterialList />} />
+            <Route path="/pedidos" element={<PedidoList />} />
+            <Route path="/producciones" element={<ProduccionList />} />
+            <Route path="/reportes" element={<ReporteList />} />
+            <Route path="/tareas" element={<TareaProduccionList />} />
+            <Route path="/usuarios" element={<UsuarioList />} />
+          </Routes>
+        </Box>
+      </div>
+    </Router>
   );
 }
 

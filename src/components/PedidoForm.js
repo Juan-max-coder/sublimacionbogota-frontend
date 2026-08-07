@@ -1,5 +1,6 @@
 // Formulario para registrar y editar pedidos
 import React, { useState, useEffect } from 'react';
+import { TextField, Button, Paper, Box } from "@mui/material";
 
 function PedidoForm({ pedidoEditado, onSave }) {
   // Estado inicial del formulario
@@ -70,19 +71,41 @@ function PedidoForm({ pedidoEditado, onSave }) {
   };
 
   return (
-    <div>
-      <h2>{pedido.idPedido ? "Editar Pedido" : "Registrar Pedido"}</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="datetime-local" name="fechaRegistroPedido" value={pedido.fechaRegistroPedido} onChange={handleChange} />
-        <input name="estadoPedido" value={pedido.estadoPedido} onChange={handleChange} placeholder="Estado" required />
-        <input name="prioridadPedido" value={pedido.prioridadPedido} onChange={handleChange} placeholder="Prioridad" required />
-        <input type="datetime-local" name="fechaEntregaEstimadaPedido" value={pedido.fechaEntregaEstimadaPedido} onChange={handleChange} />
-        <input name="materialIdMaterial" value={pedido.materialIdMaterial} onChange={handleChange} placeholder="ID Material" required />
-        <input name="clienteIdCliente" value={pedido.clienteIdCliente} onChange={handleChange} placeholder="ID Cliente" required />
-        <input name="empleadoIdEmpleado" value={pedido.empleadoIdEmpleado} onChange={handleChange} placeholder="ID Empleado" required />
-        <button type="submit">{pedido.idPedido ? "Actualizar" : "Guardar"}</button>
-      </form>
-    </div>
+    <Paper
+      sx={{
+        p: 3,
+        borderRadius: "16px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+      }}
+    >
+      <h2 style={{ marginBottom: "20px" }}>
+        {pedido.idPedido ? "Editar Pedido" : "Registrar Pedido"}
+      </h2>
+      <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <TextField type="datetime-local" name="fechaRegistroPedido" value={pedido.fechaRegistroPedido} onChange={handleChange} label="Fecha Registro" InputLabelProps={{ shrink: true }} />
+        <TextField name="estadoPedido" value={pedido.estadoPedido} onChange={handleChange} label="Estado" variant="outlined" required />
+        <TextField name="prioridadPedido" value={pedido.prioridadPedido} onChange={handleChange} label="Prioridad" variant="outlined" required />
+        <TextField type="datetime-local" name="fechaEntregaEstimadaPedido" value={pedido.fechaEntregaEstimadaPedido} onChange={handleChange} label="Fecha Entrega Estimada" InputLabelProps={{ shrink: true }} />
+        <TextField name="materialIdMaterial" value={pedido.materialIdMaterial} onChange={handleChange} label="ID Material" variant="outlined" required />
+        <TextField name="clienteIdCliente" value={pedido.clienteIdCliente} onChange={handleChange} label="ID Cliente" variant="outlined" required />
+        <TextField name="empleadoIdEmpleado" value={pedido.empleadoIdEmpleado} onChange={handleChange} label="ID Empleado" variant="outlined" required />
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            mt: 2,
+            borderRadius: "8px",
+            background: "linear-gradient(90deg, #1abc9c, #16a085)",
+            color: "#fff",
+            fontWeight: "bold",
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+          }}
+        >
+          {pedido.idPedido ? "Actualizar" : "Guardar"}
+        </Button>
+      </Box>
+    </Paper>
   );
 }
 
