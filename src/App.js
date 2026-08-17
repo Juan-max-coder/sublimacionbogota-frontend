@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Box } from "@mui/material"; // usamos Box de Material UI
+import { Box } from "@mui/material";
 import Sidebar from "./components/Sidebar";
 import Home from "./components/Home";
+import Login from "./components/Login";
 
 // Importa los módulos
 import ClienteList from "./components/ClienteList";
@@ -16,71 +17,52 @@ import PedidoList from "./components/PedidoList";
 import ProduccionList from "./components/ProduccionList";
 import ReporteList from "./components/ReporteList";
 import TareaProduccionList from "./components/TareaProduccionList";
-import UsuarioList from "./components/UsuarioList";
+import CuentaList from "./components/CuentaList"; // antes UsuarioList
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState("");
+
+  const handleLogin = (rol) => {
+    setIsAuthenticated(true);
+    setUserRole(rol);
+  };
+
   return (
     <Router>
-      <div style={{ display: "flex" }}>
-        {/* Sidebar fijo a la izquierda */}
-        <Sidebar />
-
-        {/* Contenido principal con degradé y burbujas */}
-        <Box
-          sx={{
-            flex: 1,
-            padding: "20px",
-            minHeight: "100vh",
-            background: "linear-gradient(135deg, #69ffb2, #56effa, #447df8)", // 🎨 degradé diagonal cálido
-            position: "relative",
-            overflow: "hidden",
-          }}
-        >
-          {/* burbuja arriba izquierda */}
+      {!isAuthenticated ? (
+        <Login onLogin={handleLogin} />
+      ) : (
+        <div style={{ display: "flex" }}>
+          <Sidebar role={userRole} />
           <Box
             sx={{
-              position: "absolute",
-              top: "-60px",
-              left: "-60px",
-              width: "200px",
-              height: "200px",
-              background: "rgba(255,255,255,0.25)",
-              borderRadius: "50%",
-              filter: "blur(40px)",
+              flex: 1,
+              padding: "20px",
+              minHeight: "100vh",
+              background: "linear-gradient(135deg, #69ffb2, #56effa, #447df8)",
+              position: "relative",
+              overflow: "hidden",
             }}
-          />
-          {/* burbuja abajo derecha */}
-          <Box
-            sx={{
-              position: "absolute",
-              bottom: "-60px",
-              right: "-60px",
-              width: "200px",
-              height: "200px",
-              background: "rgba(255,255,255,0.25)",
-              borderRadius: "50%",
-              filter: "blur(40px)",
-            }}
-          />
-
-          {/* Rutas */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/clientes" element={<ClienteList />} />
-            <Route path="/detalles" element={<DetallePedidoList />} />
-            <Route path="/empleados" element={<EmpleadoList />} />
-            <Route path="/facturas" element={<FacturaList />} />
-            <Route path="/insumos" element={<InsumosList />} />
-            <Route path="/movimientos" element={<InventarioMovimientoList />} />
-            <Route path="/materiales" element={<MaterialList />} />
-            <Route path="/pedidos" element={<PedidoList />} />
-            <Route path="/producciones" element={<ProduccionList />} />
-            <Route path="/reportes" element={<ReporteList />} />
-            <Route path="/tareas" element={<TareaProduccionList />} />
-            <Route path="/usuarios" element={<UsuarioList />} />
-          </Routes>
-        </Box>
-      </div>
+          >
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/clientes" element={<ClienteList />} />
+              <Route path="/detalles" element={<DetallePedidoList />} />
+              <Route path="/empleados" element={<EmpleadoList />} />
+              <Route path="/facturas" element={<FacturaList />} />
+              <Route path="/insumos" element={<InsumosList />} />
+              <Route path="/movimientos" element={<InventarioMovimientoList />} />
+              <Route path="/materiales" element={<MaterialList />} />
+              <Route path="/pedidos" element={<PedidoList />} />
+              <Route path="/producciones" element={<ProduccionList />} />
+              <Route path="/reportes" element={<ReporteList />} />
+              <Route path="/tareas" element={<TareaProduccionList />} />
+              <Route path="/cuentas" element={<CuentaList />} />
+            </Routes>
+          </Box>
+        </div>
+      )}
     </Router>
   );
 }
