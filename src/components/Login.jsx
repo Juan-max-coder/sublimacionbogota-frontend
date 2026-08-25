@@ -15,7 +15,7 @@ function Login({ onLogin }) {
     setUsuario({ ...usuario, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const url = modoRegistro
       ? "http://localhost:8080/auth/register"
@@ -28,32 +28,43 @@ function Login({ onLogin }) {
           contrasenaUsuario: usuario.contrasenaUsuario,
         });
 
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (modoRegistro) {
-          alert(data.mensaje || "Registro exitoso");
-          setModoRegistro(false);
-          setUsuario({
-            nombreUsuario: "",
-            apellidoUsuario: "",
-            correoUsuario: "",
-            contrasenaUsuario: "",
-            rolUsuario: "EMPLEADO",
-          });
-        } else if (data.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("rolUsuario", data.rolUsuario);
-          onLogin(data.rolUsuario);
-        } else {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      });
+
+      // Si el backend devuelve 401 o 403, evitamos parsear json vacío
+      if (!res.ok) {
+        if (res.status === 401) {
           alert("Credenciales incorrectas");
+        } else {
+          alert("Error en la autenticación");
         }
-      })
-      .catch(() => alert("Error al conectar con el servidor"));
+        return;
+      }
+
+      const data = await res.json();
+
+      if (modoRegistro) {
+        alert(data.mensaje || "Registro exitoso");
+        setModoRegistro(false);
+        setUsuario({
+          nombreUsuario: "",
+          apellidoUsuario: "",
+          correoUsuario: "",
+          contrasenaUsuario: "",
+          rolUsuario: "EMPLEADO",
+        });
+      } else if (data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("rolUsuario", data.rolUsuario);
+        onLogin(data.rolUsuario);
+      }
+    } catch (error) {
+      alert("Error al conectar con el servidor");
+    }
   };
 
   return (
@@ -82,17 +93,55 @@ function Login({ onLogin }) {
           {modoRegistro ? "Crear Cuenta" : "Iniciar Sesión"}
         </Typography>
 
-        <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          display="flex"
+          flexDirection="column"
+          gap={2}
+        >
           {modoRegistro && (
             <>
-              <TextField name="nombreUsuario" label="Nombre" value={usuario.nombreUsuario} onChange={handleChange} required />
-              <TextField name="apellidoUsuario" label="Apellido" value={usuario.apellidoUsuario} onChange={handleChange} required />
+              <TextField
+                name="nombreUsuario"
+                label="Nombre"
+                value={usuario.nombreUsuario}
+                onChange={handleChange}
+                required
+              />
+              <TextField
+                name="apellidoUsuario"
+                label="Apellido"
+                value={usuario.apellidoUsuario}
+                onChange={handleChange}
+                required
+              />
             </>
           )}
-          <TextField name="correoUsuario" label="Correo" type="email" value={usuario.correoUsuario} onChange={handleChange} required />
-          <TextField name="contrasenaUsuario" label="Contraseña" type="password" value={usuario.contrasenaUsuario} onChange={handleChange} required />
+          <TextField
+            name="correoUsuario"
+            label="Correo"
+            type="email"
+            value={usuario.correoUsuario}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            name="contrasenaUsuario"
+            label="Contraseña"
+            type="password"
+            value={usuario.contrasenaUsuario}
+            onChange={handleChange}
+            required
+          />
           {modoRegistro && (
-            <TextField name="rolUsuario" label="Rol" value={usuario.rolUsuario} onChange={handleChange} required />
+            <TextField
+              name="rolUsuario"
+              label="Rol"
+              value={usuario.rolUsuario}
+              onChange={handleChange}
+              required
+            />
           )}
           <Button
             type="submit"
@@ -103,7 +152,9 @@ function Login({ onLogin }) {
               background: "linear-gradient(90deg, #1abc9c, #16a085)",
               color: "#fff",
               fontWeight: "bold",
-              "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
+              "&:hover": {
+                background: "linear-gradient(90deg, #16a085, #1abc9c)",
+              },
             }}
           >
             {modoRegistro ? "Registrar" : "Entrar"}
@@ -119,7 +170,9 @@ function Login({ onLogin }) {
             textTransform: "none",
           }}
         >
-          {modoRegistro ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}
+          {modoRegistro
+            ? "¿Ya tienes cuenta? Inicia sesión"
+            : "¿No tienes cuenta? Regístrate"}
         </Button>
       </Paper>
     </Box>
