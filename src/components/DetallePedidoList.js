@@ -1,33 +1,37 @@
 // Lista de detalles de pedido con opciones de editar y eliminar
-import React, { useEffect, useState } from 'react';
-import DetallePedidoForm from './DetallePedidoForm';
+import React, { useEffect, useState } from "react";
+import DetallePedidoForm from "./DetallePedidoForm";
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button
 } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function DetallePedidoList() {
-  // Estado para la lista de detalles y el detalle que se edita
   const [detalles, setDetalles] = useState([]);
   const [detalleEditado, setDetalleEditado] = useState(null);
 
   // Cargar detalles desde el backend al iniciar
   useEffect(() => {
-    fetch("http://localhost:8080/detalles")
-      .then(res => res.json())
-      .then(data => setDetalles(data));
+    fetchWithToken("http://localhost:8080/detalles")
+      .then((data) => setDetalles(data))
+      .catch((err) => alert(err.message));
   }, []);
 
   // Eliminar detalle por id
-  const eliminarDetalle = (id) => {
-    fetch(`http://localhost:8080/detalles/${id}`, { method: "DELETE" })
-      .then(() => setDetalles(detalles.filter(d => d.idDetalle !== id)));
+  const eliminarDetalle = async (id) => {
+    try {
+      await fetchWithToken(`http://localhost:8080/detalles/${id}`, { method: "DELETE" });
+      setDetalles(detalles.filter((d) => d.idDetalle !== id));
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   // Guardar detalle nuevo o actualizado
   const guardarDetalle = (detalle) => {
     if (detalleEditado) {
-      setDetalles(detalles.map(d => d.idDetalle === detalle.idDetalle ? detalle : d));
+      setDetalles(detalles.map((d) => (d.idDetalle === detalle.idDetalle ? detalle : d)));
       setDetalleEditado(null);
     } else {
       setDetalles([...detalles, detalle]);
@@ -44,7 +48,7 @@ function DetallePedidoList() {
         sx={{
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          background: "linear-gradient(135deg, #fdfbfb, #ebedee)"
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)",
         }}
       >
         <Table>
@@ -61,7 +65,7 @@ function DetallePedidoList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {detalles.map(d => (
+            {detalles.map((d) => (
               <TableRow
                 key={d.idDetalle}
                 hover
@@ -82,7 +86,7 @@ function DetallePedidoList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #1abc9c, #16a085)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
                     }}
                     onClick={() => setDetalleEditado(d)}
                   >
@@ -94,7 +98,7 @@ function DetallePedidoList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #e74c3c, #c0392b)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" },
                     }}
                     onClick={() => eliminarDetalle(d.idDetalle)}
                   >

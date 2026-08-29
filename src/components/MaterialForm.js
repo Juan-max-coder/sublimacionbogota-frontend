@@ -1,54 +1,50 @@
 // Formulario para registrar y editar materiales
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Paper, Box } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function MaterialForm({ materialEditado, onSave }) {
-  // Estado inicial del formulario
   const [material, setMaterial] = useState({
     nombreMaterial: "",
     tipoMaterial: "",
     colorMaterial: "",
     cantidadDisponibleMaterial: "",
-    clienteIdCliente: ""
+    clienteIdCliente: "",
   });
 
-  // Si recibo un material para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (materialEditado) {
       setMaterial(materialEditado);
     }
   }, [materialEditado]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setMaterial({ ...material, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar material)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const method = material.idMaterial ? "PUT" : "POST";
-    const url = material.idMaterial 
-      ? `http://localhost:8080/materiales/${material.idMaterial}` 
+    const url = material.idMaterial
+      ? `http://localhost:8080/materiales/${material.idMaterial}`
       : "http://localhost:8080/materiales";
 
-    fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(material)
-    })
-      .then(res => res.json())
-      .then(data => {
-        onSave(data); // actualizo la lista
-        // Reinicio el formulario
-        setMaterial({
-          nombreMaterial: "",
-          tipoMaterial: "",
-          colorMaterial: "",
-          cantidadDisponibleMaterial: "",
-          clienteIdCliente: ""
-        });
+    try {
+      const data = await fetchWithToken(url, {
+        method,
+        body: JSON.stringify(material),
       });
+      onSave(data);
+      setMaterial({
+        nombreMaterial: "",
+        tipoMaterial: "",
+        colorMaterial: "",
+        cantidadDisponibleMaterial: "",
+        clienteIdCliente: "",
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -57,7 +53,7 @@ function MaterialForm({ materialEditado, onSave }) {
         p: 3,
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)",
       }}
     >
       <h2 style={{ marginBottom: "20px" }}>
@@ -78,7 +74,7 @@ function MaterialForm({ materialEditado, onSave }) {
             background: "linear-gradient(90deg, #1abc9c, #16a085)",
             color: "#fff",
             fontWeight: "bold",
-            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
           }}
         >
           {material.idMaterial ? "Actualizar" : "Guardar"}

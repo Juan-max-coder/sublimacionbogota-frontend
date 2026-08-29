@@ -1,67 +1,66 @@
 // Formulario para registrar y editar facturas
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Paper, Box } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function FacturaForm({ facturaEditada, onSave }) {
-  // Estado inicial del formulario
   const [factura, setFactura] = useState({
     estadoFactura: "",
     fechaExportacionFactura: "",
     fechaConfirmacionFactura: "",
-    pedidoIdPedido: ""
+    pedidoIdPedido: "",
   });
 
-  // Si recibo una factura para editar, convierto las fechas a formato ISO
   useEffect(() => {
     if (facturaEditada) {
       setFactura({
         ...facturaEditada,
         fechaExportacionFactura: facturaEditada.fechaExportacionFactura
-          ? new Date(facturaEditada.fechaExportacionFactura).toISOString().slice(0,16)
+          ? new Date(facturaEditada.fechaExportacionFactura).toISOString().slice(0, 16)
           : "",
         fechaConfirmacionFactura: facturaEditada.fechaConfirmacionFactura
-          ? new Date(facturaEditada.fechaConfirmacionFactura).toISOString().slice(0,16)
-          : ""
+          ? new Date(facturaEditada.fechaConfirmacionFactura).toISOString().slice(0, 16)
+          : "",
       });
     }
   }, [facturaEditada]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setFactura({ ...factura, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar factura)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const method = factura.idFactura ? "PUT" : "POST";
-    const url = factura.idFactura 
-      ? `http://localhost:8080/facturas/${factura.idFactura}` 
+    const url = factura.idFactura
+      ? `http://localhost:8080/facturas/${factura.idFactura}`
       : "http://localhost:8080/facturas";
 
-    // Convertir fechas a objetos Date antes de enviar
     const facturaEnviar = {
       ...factura,
-      fechaExportacionFactura: factura.fechaExportacionFactura ? new Date(factura.fechaExportacionFactura) : null,
-      fechaConfirmacionFactura: factura.fechaConfirmacionFactura ? new Date(factura.fechaConfirmacionFactura) : null
+      fechaExportacionFactura: factura.fechaExportacionFactura
+        ? new Date(factura.fechaExportacionFactura)
+        : null,
+      fechaConfirmacionFactura: factura.fechaConfirmacionFactura
+        ? new Date(factura.fechaConfirmacionFactura)
+        : null,
     };
 
-    fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(facturaEnviar)
-    })
-      .then(res => res.json())
-      .then(data => {
-        onSave(data); // actualizo la lista
-        // Reinicio el formulario
-        setFactura({
-          estadoFactura: "",
-          fechaExportacionFactura: "",
-          fechaConfirmacionFactura: "",
-          pedidoIdPedido: ""
-        });
+    try {
+      const data = await fetchWithToken(url, {
+        method,
+        body: JSON.stringify(facturaEnviar),
       });
+      onSave(data);
+      setFactura({
+        estadoFactura: "",
+        fechaExportacionFactura: "",
+        fechaConfirmacionFactura: "",
+        pedidoIdPedido: "",
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -70,7 +69,7 @@ function FacturaForm({ facturaEditada, onSave }) {
         p: 3,
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)",
       }}
     >
       <h2 style={{ marginBottom: "20px" }}>
@@ -90,7 +89,7 @@ function FacturaForm({ facturaEditada, onSave }) {
             background: "linear-gradient(90deg, #1abc9c, #16a085)",
             color: "#fff",
             fontWeight: "bold",
-            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
           }}
         >
           {factura.idFactura ? "Actualizar" : "Guardar"}

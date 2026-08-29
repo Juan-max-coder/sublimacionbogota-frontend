@@ -1,9 +1,9 @@
 // Formulario para registrar y editar detalles de pedido
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Paper, Box } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function DetallePedidoForm({ detalleEditado, onSave }) {
-  // Estado inicial del formulario
   const [detalle, setDetalle] = useState({
     cantidadMaterial: "",
     precioUnitarioMaterial: "",
@@ -11,38 +11,32 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
     subtotalPedido: "",
     pedidoIdPedido: "",
     materialIdMaterial: "",
-    insumosIdInsumo: ""
+    insumosIdInsumo: "",
   });
 
-  // Si recibo un detalle para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (detalleEditado) {
       setDetalle(detalleEditado);
     }
   }, [detalleEditado]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setDetalle({ ...detalle, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar detalle)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const method = detalle.idDetalle ? "PUT" : "POST";
-    const url = detalle.idDetalle 
-      ? `http://localhost:8080/detalles/${detalle.idDetalle}` 
+    const url = detalle.idDetalle
+      ? `http://localhost:8080/detalles/${detalle.idDetalle}`
       : "http://localhost:8080/detalles";
 
-    fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(detalle)
-    })
-    .then(res => res.json())
-    .then(data => {
-      onSave(data); // actualizo la lista
-      // Reinicio el formulario
+    try {
+      const data = await fetchWithToken(url, {
+        method,
+        body: JSON.stringify(detalle),
+      });
+      onSave(data);
       setDetalle({
         cantidadMaterial: "",
         precioUnitarioMaterial: "",
@@ -50,9 +44,11 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
         subtotalPedido: "",
         pedidoIdPedido: "",
         materialIdMaterial: "",
-        insumosIdInsumo: ""
+        insumosIdInsumo: "",
       });
-    });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -61,7 +57,7 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
         p: 3,
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)",
       }}
     >
       <h2 style={{ marginBottom: "20px" }}>
@@ -84,7 +80,7 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
             background: "linear-gradient(90deg, #1abc9c, #16a085)",
             color: "#fff",
             fontWeight: "bold",
-            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
           }}
         >
           {detalle.idDetalle ? "Actualizar" : "Guardar"}

@@ -1,54 +1,50 @@
 // Formulario para registrar y editar insumos
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Paper, Box } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function InsumosForm({ insumoEditado, onSave }) {
-  // Estado inicial del formulario
   const [insumo, setInsumo] = useState({
     nombreInsumo: "",
     costoInsumo: "",
     stockInsumo: "",
     precioInsumo: "",
-    inventarioMovimientoIdMovimiento: ""
+    inventarioMovimientoIdMovimiento: "",
   });
 
-  // Si recibo un insumo para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (insumoEditado) {
       setInsumo(insumoEditado);
     }
   }, [insumoEditado]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setInsumo({ ...insumo, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar insumo)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const method = insumo.idInsumo ? "PUT" : "POST";
-    const url = insumo.idInsumo 
-      ? `http://localhost:8080/insumos/${insumo.idInsumo}` 
+    const url = insumo.idInsumo
+      ? `http://localhost:8080/insumos/${insumo.idInsumo}`
       : "http://localhost:8080/insumos";
 
-    fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(insumo)
-    })
-      .then(res => res.json())
-      .then(data => {
-        onSave(data); // actualizo la lista
-        // Reinicio el formulario
-        setInsumo({
-          nombreInsumo: "",
-          costoInsumo: "",
-          stockInsumo: "",
-          precioInsumo: "",
-          inventarioMovimientoIdMovimiento: ""
-        });
+    try {
+      const data = await fetchWithToken(url, {
+        method,
+        body: JSON.stringify(insumo),
       });
+      onSave(data);
+      setInsumo({
+        nombreInsumo: "",
+        costoInsumo: "",
+        stockInsumo: "",
+        precioInsumo: "",
+        inventarioMovimientoIdMovimiento: "",
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -57,7 +53,7 @@ function InsumosForm({ insumoEditado, onSave }) {
         p: 3,
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)",
       }}
     >
       <h2 style={{ marginBottom: "20px" }}>
@@ -78,7 +74,7 @@ function InsumosForm({ insumoEditado, onSave }) {
             background: "linear-gradient(90deg, #1abc9c, #16a085)",
             color: "#fff",
             fontWeight: "bold",
-            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
           }}
         >
           {insumo.idInsumo ? "Actualizar" : "Guardar"}

@@ -35,10 +35,11 @@ function Login({ onLogin }) {
         body,
       });
 
-      // Si el backend devuelve 401 o 403, evitamos parsear json vacío
       if (!res.ok) {
         if (res.status === 401) {
           alert("Credenciales incorrectas");
+        } else if (res.status === 403) {
+          alert("Acceso denegado. Verifica tu rol o token.");
         } else {
           alert("Error en la autenticación");
         }
@@ -60,10 +61,12 @@ function Login({ onLogin }) {
       } else if (data.token) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("rolUsuario", data.rolUsuario);
+        alert("Inicio de sesión exitoso");
         onLogin(data.rolUsuario);
       }
     } catch (error) {
       alert("Error al conectar con el servidor");
+      console.error(error);
     }
   };
 

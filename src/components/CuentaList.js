@@ -1,26 +1,34 @@
 // Lista de cuentas con opciones de editar y eliminar
-import React, { useEffect, useState } from 'react';
-import CuentaForm from './CuentaForm';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import CuentaForm from "./CuentaForm";
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Button
+} from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function CuentaList() {
   const [cuentas, setCuentas] = useState([]);
   const [cuentaEditada, setCuentaEditada] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/usuarios")
-      .then(res => res.json())
-      .then(data => setCuentas(data));
+    fetchWithToken("http://localhost:8080/usuarios")
+      .then((data) => setCuentas(data))
+      .catch((err) => alert(err.message));
   }, []);
 
-  const eliminarCuenta = (id) => {
-    fetch(`http://localhost:8080/usuarios/${id}`, { method: "DELETE" })
-      .then(() => setCuentas(cuentas.filter(c => c.idUsuario !== id)));
+  const eliminarCuenta = async (id) => {
+    try {
+      await fetchWithToken(`http://localhost:8080/usuarios/${id}`, { method: "DELETE" });
+      setCuentas(cuentas.filter((c) => c.idUsuario !== id));
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const guardarCuenta = (cuenta) => {
     if (cuentaEditada) {
-      setCuentas(cuentas.map(c => c.idUsuario === cuenta.idUsuario ? cuenta : c));
+      setCuentas(cuentas.map((c) => (c.idUsuario === cuenta.idUsuario ? cuenta : c)));
       setCuentaEditada(null);
     } else {
       setCuentas([...cuentas, cuenta]);
@@ -30,7 +38,14 @@ function CuentaList() {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Lista de Cuentas</h2>
-      <TableContainer component={Paper} sx={{ borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #fdfbfb, #ebedee)" }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)",
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#2c3e50" }}>
@@ -42,17 +57,36 @@ function CuentaList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {cuentas.map(c => (
+            {cuentas.map((c) => (
               <TableRow key={c.idUsuario} hover sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}>
                 <TableCell>{c.nombreUsuario}</TableCell>
                 <TableCell>{c.apellidoUsuario}</TableCell>
                 <TableCell>{c.correoUsuario}</TableCell>
                 <TableCell>{c.rolUsuario}</TableCell>
                 <TableCell>
-                  <Button variant="contained" sx={{ mr: 1, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }} onClick={() => setCuentaEditada(c)}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      mr: 1,
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #1abc9c, #16a085)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
+                    }}
+                    onClick={() => setCuentaEditada(c)}
+                  >
                     Editar
                   </Button>
-                  <Button variant="contained" sx={{ borderRadius: "8px", background: "linear-gradient(90deg, #e74c3c, #c0392b)", color: "#fff", "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" } }} onClick={() => eliminarCuenta(c.idUsuario)}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #e74c3c, #c0392b)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" },
+                    }}
+                    onClick={() => eliminarCuenta(c.idUsuario)}
+                  >
                     Eliminar
                   </Button>
                 </TableCell>
@@ -62,7 +96,6 @@ function CuentaList() {
         </Table>
       </TableContainer>
 
-      {/* Formulario para crear o editar cuenta */}
       <div style={{ marginTop: "30px" }}>
         <CuentaForm cuentaEditada={cuentaEditada} onSave={guardarCuenta} />
       </div>

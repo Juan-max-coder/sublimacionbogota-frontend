@@ -1,36 +1,40 @@
 // Lista de insumos con opciones de editar y eliminar
-import React, { useEffect, useState } from 'react';
-import InsumosForm from './InsumosForm';
+import React, { useEffect, useState } from "react";
+import InsumosForm from "./InsumosForm";
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button
 } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function InsumosList() {
-  // Estado para la lista de insumos y el insumo que se edita
   const [insumos, setInsumos] = useState([]);
   const [insumoEditado, setInsumoEditado] = useState(null);
 
   // Cargar insumos desde el backend al iniciar
   useEffect(() => {
-    fetch("http://localhost:8080/insumos")
-      .then(res => res.json())
-      .then(data => {
+    fetchWithToken("http://localhost:8080/insumos")
+      .then((data) => {
         console.log("Insumos recibidos:", data);
         setInsumos(data);
-      });
+      })
+      .catch((err) => alert(err.message));
   }, []);
 
   // Eliminar insumo por id
-  const eliminarInsumo = (id) => {
-    fetch(`http://localhost:8080/insumos/${id}`, { method: "DELETE" })
-      .then(() => setInsumos(insumos.filter(i => i.idInsumo !== id)));
+  const eliminarInsumo = async (id) => {
+    try {
+      await fetchWithToken(`http://localhost:8080/insumos/${id}`, { method: "DELETE" });
+      setInsumos(insumos.filter((i) => i.idInsumo !== id));
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   // Guardar insumo nuevo o actualizado
   const guardarInsumo = (insumo) => {
     if (insumoEditado) {
-      setInsumos(insumos.map(i => i.idInsumo === insumo.idInsumo ? insumo : i));
+      setInsumos(insumos.map((i) => (i.idInsumo === insumo.idInsumo ? insumo : i)));
       setInsumoEditado(null);
     } else {
       setInsumos([...insumos, insumo]);
@@ -40,14 +44,12 @@ function InsumosList() {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Lista de Insumos</h2>
-
-      {/* Tabla estilizada con Material UI */}
       <TableContainer
         component={Paper}
         sx={{
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          background: "linear-gradient(135deg, #fdfbfb, #ebedee)"
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)",
         }}
       >
         <Table>
@@ -62,12 +64,8 @@ function InsumosList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {insumos.map(i => (
-              <TableRow
-                key={i.idInsumo}
-                hover
-                sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
-              >
+            {insumos.map((i) => (
+              <TableRow key={i.idInsumo} hover sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}>
                 <TableCell>{i.nombreInsumo}</TableCell>
                 <TableCell>{i.costoInsumo}</TableCell>
                 <TableCell>{i.stockInsumo}</TableCell>
@@ -81,7 +79,7 @@ function InsumosList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #1abc9c, #16a085)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
                     }}
                     onClick={() => setInsumoEditado(i)}
                   >
@@ -93,7 +91,7 @@ function InsumosList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #e74c3c, #c0392b)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" },
                     }}
                     onClick={() => eliminarInsumo(i.idInsumo)}
                   >
@@ -106,7 +104,6 @@ function InsumosList() {
         </Table>
       </TableContainer>
 
-      {/* Formulario para crear o editar insumo */}
       <div style={{ marginTop: "30px" }}>
         <InsumosForm insumoEditado={insumoEditado} onSave={guardarInsumo} />
       </div>

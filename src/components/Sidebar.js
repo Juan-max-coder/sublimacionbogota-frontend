@@ -12,7 +12,6 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import LayersIcon from "@mui/icons-material/Layers";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 function Sidebar() {
   return (
@@ -32,9 +31,17 @@ function Sidebar() {
     >
       <List>
         {/* Inicio */}
-        <ListItem button component={Link} to="/" sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "8px" } }}>
+        <ListItem
+          button
+          component={Link}
+          to="/"
+          sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "8px" } }}
+        >
           <ListItemIcon><HomeIcon sx={{ color: "#fff" }} /></ListItemIcon>
-          <ListItemText primary="MENÚ" sx={{ color: "#fff", fontSize: "1.2rem", fontFamily: "cursive", fontWeight: "bold" }} />
+          <ListItemText
+            primary="MENÚ"
+            sx={{ color: "#fff", fontSize: "1.2rem", fontFamily: "cursive", fontWeight: "bold" }}
+          />
         </ListItem>
 
         {/* Clientes */}
@@ -101,12 +108,6 @@ function Sidebar() {
         <ListItem button component={Link} to="/tareas" sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "8px" } }}>
           <ListItemIcon><AssignmentIcon sx={{ color: "#fff" }} /></ListItemIcon>
           <ListItemText primary="Tareas Producción" sx={{ color: "#fff", fontSize: "1.2rem", fontFamily: "cursive", fontWeight: "bold" }} />
-        </ListItem>
-
-        {/* Usuarios */}
-        <ListItem button component={Link} to="/usuarios" sx={{ "&:hover": { backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "8px" } }}>
-          <ListItemIcon><AccountCircleIcon sx={{ color: "#fff" }} /></ListItemIcon>
-          <ListItemText primary="Usuarios" sx={{ color: "#fff", fontSize: "1.2rem", fontFamily: "cursive", fontWeight: "bold" }} />
         </ListItem>
       </List>
     </Drawer>

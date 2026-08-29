@@ -1,36 +1,40 @@
 // Lista de empleados con opciones de editar y eliminar
-import React, { useEffect, useState } from 'react';
-import EmpleadoForm from './EmpleadoForm';
+import React, { useEffect, useState } from "react";
+import EmpleadoForm from "./EmpleadoForm";
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button
 } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function EmpleadoList() {
-  // Estado para la lista de empleados y el empleado que se edita
   const [empleados, setEmpleados] = useState([]);
   const [empleadoEditado, setEmpleadoEditado] = useState(null);
 
   // Cargar empleados desde el backend al iniciar
   useEffect(() => {
-    fetch("http://localhost:8080/empleados")
-      .then(res => res.json())
-      .then(data => {
+    fetchWithToken("http://localhost:8080/empleados")
+      .then((data) => {
         console.log("Empleados recibidos:", data);
         setEmpleados(data);
-      });
+      })
+      .catch((err) => alert(err.message));
   }, []);
 
   // Eliminar empleado por id
-  const eliminarEmpleado = (id) => {
-    fetch(`http://localhost:8080/empleados/${id}`, { method: "DELETE" })
-      .then(() => setEmpleados(empleados.filter(e => e.idEmpleado !== id)));
+  const eliminarEmpleado = async (id) => {
+    try {
+      await fetchWithToken(`http://localhost:8080/empleados/${id}`, { method: "DELETE" });
+      setEmpleados(empleados.filter((e) => e.idEmpleado !== id));
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   // Guardar empleado nuevo o actualizado
   const guardarEmpleado = (empleado) => {
     if (empleadoEditado) {
-      setEmpleados(empleados.map(e => e.idEmpleado === empleado.idEmpleado ? empleado : e));
+      setEmpleados(empleados.map((e) => (e.idEmpleado === empleado.idEmpleado ? empleado : e)));
       setEmpleadoEditado(null);
     } else {
       setEmpleados([...empleados, empleado]);
@@ -40,14 +44,12 @@ function EmpleadoList() {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Lista de Empleados</h2>
-
-      {/* Tabla estilizada con Material UI */}
       <TableContainer
         component={Paper}
         sx={{
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          background: "linear-gradient(135deg, #fdfbfb, #ebedee)"
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)",
         }}
       >
         <Table>
@@ -62,12 +64,8 @@ function EmpleadoList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {empleados.map(e => (
-              <TableRow
-                key={e.idEmpleado}
-                hover
-                sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
-              >
+            {empleados.map((e) => (
+              <TableRow key={e.idEmpleado} hover sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}>
                 <TableCell>{e.nombreEmpleado}</TableCell>
                 <TableCell>{e.cargoEmpleado}</TableCell>
                 <TableCell>{e.areaEmpleado}</TableCell>
@@ -81,7 +79,7 @@ function EmpleadoList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #1abc9c, #16a085)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
                     }}
                     onClick={() => setEmpleadoEditado(e)}
                   >
@@ -93,7 +91,7 @@ function EmpleadoList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #e74c3c, #c0392b)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" },
                     }}
                     onClick={() => eliminarEmpleado(e.idEmpleado)}
                   >
@@ -106,7 +104,6 @@ function EmpleadoList() {
         </Table>
       </TableContainer>
 
-      {/* Formulario para crear o editar empleado */}
       <div style={{ marginTop: "30px" }}>
         <EmpleadoForm empleadoEditado={empleadoEditado} onSave={guardarEmpleado} />
       </div>

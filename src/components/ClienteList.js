@@ -1,33 +1,34 @@
 // Lista de clientes con opciones de editar y eliminar
-import React, { useEffect, useState } from 'react';
-import ClienteForm from './ClienteForm';
+import React, { useEffect, useState } from "react";
+import ClienteForm from "./ClienteForm";
 import {
   Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, Paper, Button
 } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function ClienteList() {
-  // Estado para la lista de clientes y el cliente que se edita
   const [clientes, setClientes] = useState([]);
   const [clienteEditado, setClienteEditado] = useState(null);
 
-  // Cargar clientes desde el backend al iniciar
   useEffect(() => {
-    fetch("http://localhost:8080/clientes")
-      .then(res => res.json())
-      .then(data => setClientes(data));
+    fetchWithToken("http://localhost:8080/clientes")
+      .then((data) => setClientes(data))
+      .catch((err) => alert(err.message));
   }, []);
 
-  // Eliminar cliente por id
-  const eliminarCliente = (id) => {
-    fetch(`http://localhost:8080/clientes/${id}`, { method: "DELETE" })
-      .then(() => setClientes(clientes.filter(c => c.idCliente !== id)));
+  const eliminarCliente = async (id) => {
+    try {
+      await fetchWithToken(`http://localhost:8080/clientes/${id}`, { method: "DELETE" });
+      setClientes(clientes.filter((c) => c.idCliente !== id));
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
-  // Guardar cliente nuevo o actualizado
   const guardarCliente = (cliente) => {
     if (clienteEditado) {
-      setClientes(clientes.map(c => c.idCliente === cliente.idCliente ? cliente : c));
+      setClientes(clientes.map((c) => (c.idCliente === cliente.idCliente ? cliente : c)));
       setClienteEditado(null);
     } else {
       setClientes([...clientes, cliente]);
@@ -37,14 +38,12 @@ function ClienteList() {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Lista de Clientes</h2>
-
-      {/* Tabla estilizada con Material UI */}
       <TableContainer
         component={Paper}
         sx={{
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-          background: "linear-gradient(135deg, #fdfbfb, #ebedee)"
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)",
         }}
       >
         <Table>
@@ -60,12 +59,8 @@ function ClienteList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {clientes.map(c => (
-              <TableRow
-                key={c.idCliente}
-                hover
-                sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}
-              >
+            {clientes.map((c) => (
+              <TableRow key={c.idCliente} hover sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}>
                 <TableCell>{c.nombreCliente}</TableCell>
                 <TableCell>{c.apellidoCliente}</TableCell>
                 <TableCell>{c.direccionCliente}</TableCell>
@@ -80,7 +75,7 @@ function ClienteList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #1abc9c, #16a085)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
                     }}
                     onClick={() => setClienteEditado(c)}
                   >
@@ -92,7 +87,7 @@ function ClienteList() {
                       borderRadius: "8px",
                       background: "linear-gradient(90deg, #e74c3c, #c0392b)",
                       color: "#fff",
-                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" }
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" },
                     }}
                     onClick={() => eliminarCliente(c.idCliente)}
                   >
@@ -105,7 +100,6 @@ function ClienteList() {
         </Table>
       </TableContainer>
 
-      {/* Formulario para crear o editar cliente */}
       <div style={{ marginTop: "30px" }}>
         <ClienteForm clienteEditado={clienteEditado} onSave={guardarCliente} />
       </div>

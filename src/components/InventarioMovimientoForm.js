@@ -1,50 +1,46 @@
 // Formulario para registrar y editar movimientos de inventario
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Paper, Box } from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function InventarioMovimientoForm({ movimientoEditado, onSave }) {
-  // Estado inicial del formulario
   const [movimiento, setMovimiento] = useState({
     tipoMovimiento: "",
     cantidadDelMovimiento: "",
-    detallesDelMaterialEnMovimiento: ""
+    detallesDelMaterialEnMovimiento: "",
   });
 
-  // Si recibo un movimiento para editar, cargo sus datos en el formulario
   useEffect(() => {
     if (movimientoEditado) {
       setMovimiento(movimientoEditado);
     }
   }, [movimientoEditado]);
 
-  // Manejo de cambios en los inputs
   const handleChange = (e) => {
     setMovimiento({ ...movimiento, [e.target.name]: e.target.value });
   };
 
-  // Envío del formulario (crear o actualizar movimiento)
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const method = movimiento.idMovimiento ? "PUT" : "POST";
-    const url = movimiento.idMovimiento 
-      ? `http://localhost:8080/movimientos/${movimiento.idMovimiento}` 
+    const url = movimiento.idMovimiento
+      ? `http://localhost:8080/movimientos/${movimiento.idMovimiento}`
       : "http://localhost:8080/movimientos";
 
-    fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(movimiento)
-    })
-      .then(res => res.json())
-      .then(data => {
-        onSave(data); // actualizo la lista
-        // Reinicio el formulario
-        setMovimiento({
-          tipoMovimiento: "",
-          cantidadDelMovimiento: "",
-          detallesDelMaterialEnMovimiento: ""
-        });
+    try {
+      const data = await fetchWithToken(url, {
+        method,
+        body: JSON.stringify(movimiento),
       });
+      onSave(data);
+      setMovimiento({
+        tipoMovimiento: "",
+        cantidadDelMovimiento: "",
+        detallesDelMaterialEnMovimiento: "",
+      });
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -53,7 +49,7 @@ function InventarioMovimientoForm({ movimientoEditado, onSave }) {
         p: 3,
         borderRadius: "16px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
-        background: "linear-gradient(135deg, #ffffff, #f0f0f0)"
+        background: "linear-gradient(135deg, #ffffff, #f0f0f0)",
       }}
     >
       <h2 style={{ marginBottom: "20px" }}>
@@ -72,7 +68,7 @@ function InventarioMovimientoForm({ movimientoEditado, onSave }) {
             background: "linear-gradient(90deg, #1abc9c, #16a085)",
             color: "#fff",
             fontWeight: "bold",
-            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" }
+            "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
           }}
         >
           {movimiento.idMovimiento ? "Actualizar" : "Guardar"}

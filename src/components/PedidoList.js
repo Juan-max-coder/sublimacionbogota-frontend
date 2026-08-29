@@ -1,26 +1,34 @@
 // Lista de pedidos con opciones de editar y eliminar
-import React, { useEffect, useState } from 'react';
-import PedidoForm from './PedidoForm';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import PedidoForm from "./PedidoForm";
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper, Button
+} from "@mui/material";
+import { fetchWithToken } from "../services/api"; // ✅ Importa la función global
 
 function PedidoList() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoEditado, setPedidoEditado] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/pedidos")
-      .then(res => res.json())
-      .then(data => setPedidos(data));
+    fetchWithToken("http://localhost:8080/pedidos")
+      .then((data) => setPedidos(data))
+      .catch((err) => alert(err.message));
   }, []);
 
-  const eliminarPedido = (id) => {
-    fetch(`http://localhost:8080/pedidos/${id}`, { method: "DELETE" })
-      .then(() => setPedidos(pedidos.filter(p => p.idPedido !== id)));
+  const eliminarPedido = async (id) => {
+    try {
+      await fetchWithToken(`http://localhost:8080/pedidos/${id}`, { method: "DELETE" });
+      setPedidos(pedidos.filter((p) => p.idPedido !== id));
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const guardarPedido = (pedido) => {
     if (pedidoEditado) {
-      setPedidos(pedidos.map(p => p.idPedido === pedido.idPedido ? pedido : p));
+      setPedidos(pedidos.map((p) => (p.idPedido === pedido.idPedido ? pedido : p)));
       setPedidoEditado(null);
     } else {
       setPedidos([...pedidos, pedido]);
@@ -30,7 +38,14 @@ function PedidoList() {
   return (
     <div>
       <h2 style={{ marginBottom: "20px" }}>Lista de Pedidos</h2>
-      <TableContainer component={Paper} sx={{ borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", background: "linear-gradient(135deg, #fdfbfb, #ebedee)" }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+          background: "linear-gradient(135deg, #fdfbfb, #ebedee)",
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#2c3e50" }}>
@@ -45,7 +60,7 @@ function PedidoList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pedidos.map(p => (
+            {pedidos.map((p) => (
               <TableRow key={p.idPedido} hover sx={{ "&:hover": { backgroundColor: "rgba(0,0,0,0.05)" } }}>
                 <TableCell>{p.fechaRegistroPedido ? new Date(p.fechaRegistroPedido).toLocaleString() : ""}</TableCell>
                 <TableCell>{p.estadoPedido}</TableCell>
@@ -55,10 +70,29 @@ function PedidoList() {
                 <TableCell>{p.clienteIdCliente}</TableCell>
                 <TableCell>{p.empleadoIdEmpleado}</TableCell>
                 <TableCell>
-                  <Button variant="contained" sx={{ mr: 1, borderRadius: "8px", background: "linear-gradient(90deg, #1abc9c, #16a085)", color: "#fff", "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" } }} onClick={() => setPedidoEditado(p)}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      mr: 1,
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #1abc9c, #16a085)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #16a085, #1abc9c)" },
+                    }}
+                    onClick={() => setPedidoEditado(p)}
+                  >
                     Editar
                   </Button>
-                  <Button variant="contained" sx={{ borderRadius: "8px", background: "linear-gradient(90deg, #e74c3c, #c0392b)", color: "#fff", "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" } }} onClick={() => eliminarPedido(p.idPedido)}>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      borderRadius: "8px",
+                      background: "linear-gradient(90deg, #e74c3c, #c0392b)",
+                      color: "#fff",
+                      "&:hover": { background: "linear-gradient(90deg, #c0392b, #e74c3c)" },
+                    }}
+                    onClick={() => eliminarPedido(p.idPedido)}
+                  >
                     Eliminar
                   </Button>
                 </TableCell>
@@ -68,7 +102,6 @@ function PedidoList() {
         </Table>
       </TableContainer>
 
-      {/* Formulario para crear o editar pedido */}
       <div style={{ marginTop: "30px" }}>
         <PedidoForm pedidoEditado={pedidoEditado} onSave={guardarPedido} />
       </div>
