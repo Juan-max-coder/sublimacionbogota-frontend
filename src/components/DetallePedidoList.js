@@ -11,17 +11,19 @@ function DetallePedidoList() {
   const [detalles, setDetalles] = useState([]);
   const [detalleEditado, setDetalleEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   // Cargar detalles desde el backend al iniciar
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/detalles")
+    fetchWithToken(`${API_URL}/detalles`)
       .then((data) => setDetalles(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   // Eliminar detalle por id
   const eliminarDetalle = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/detalles/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/detalles/${id}`, { method: "DELETE" });
       setDetalles(detalles.filter((d) => d.idDetalle !== id));
     } catch (error) {
       alert(error.message);

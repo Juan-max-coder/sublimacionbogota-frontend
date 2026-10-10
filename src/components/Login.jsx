@@ -17,9 +17,10 @@ function Login({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = modoRegistro
-      ? "http://localhost:8080/auth/register"
-      : "http://localhost:8080/auth/login";
+      ? `${API_URL}/auth/register`
+      : `${API_URL}/auth/login`;
 
     const body = modoRegistro
       ? JSON.stringify(usuario)

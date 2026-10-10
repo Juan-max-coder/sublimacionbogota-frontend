@@ -11,18 +11,20 @@ function InventarioMovimientoList() {
   const [movimientos, setMovimientos] = useState([]);
   const [movimientoEditado, setMovimientoEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/movimientos")
+    fetchWithToken(`${API_URL}/movimientos`)
       .then((data) => {
         console.log("Movimientos recibidos:", data);
         setMovimientos(data);
       })
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarMovimiento = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/movimientos/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/movimientos/${id}`, { method: "DELETE" });
       setMovimientos(movimientos.filter((m) => m.idMovimiento !== id));
     } catch (error) {
       alert(error.message);

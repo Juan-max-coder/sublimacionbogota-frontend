@@ -11,20 +11,22 @@ function MaterialList() {
   const [materiales, setMateriales] = useState([]);
   const [materialEditado, setMaterialEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   // Cargar materiales desde el backend al iniciar
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/materiales")
+    fetchWithToken(`${API_URL}/materiales`)
       .then((data) => {
         console.log("Materiales recibidos:", data);
         setMateriales(data);
       })
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   // Eliminar material por id
   const eliminarMaterial = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/materiales/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/materiales/${id}`, { method: "DELETE" });
       setMateriales(materiales.filter((m) => m.idMaterial !== id));
     } catch (error) {
       alert(error.message);

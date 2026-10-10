@@ -11,17 +11,19 @@ function ProduccionList() {
   const [producciones, setProducciones] = useState([]);
   const [produccionEditada, setProduccionEditada] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   // Cargar producciones desde el backend al iniciar
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/producciones")
+    fetchWithToken(`${API_URL}/producciones`)
       .then((data) => setProducciones(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   // Eliminar producción por id
   const eliminarProduccion = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/producciones/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/producciones/${id}`, { method: "DELETE" });
       setProducciones(producciones.filter((p) => p.idProduccion !== id));
     } catch (error) {
       alert(error.message);

@@ -11,15 +11,17 @@ function ClienteList() {
   const [clientes, setClientes] = useState([]);
   const [clienteEditado, setClienteEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/clientes")
+    fetchWithToken(`${API_URL}/clientes`)
       .then((data) => setClientes(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarCliente = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/clientes/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/clientes/${id}`, { method: "DELETE" });
       setClientes(clientes.filter((c) => c.idCliente !== id));
     } catch (error) {
       alert(error.message);

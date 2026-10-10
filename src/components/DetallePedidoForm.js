@@ -27,9 +27,10 @@ function DetallePedidoForm({ detalleEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = detalle.idDetalle ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = detalle.idDetalle
-      ? `http://localhost:8080/detalles/${detalle.idDetalle}`
-      : "http://localhost:8080/detalles";
+      ? `${API_URL}/detalles/${detalle.idDetalle}`
+      : `${API_URL}/detalles`;
 
     try {
       const data = await fetchWithToken(url, {

@@ -11,15 +11,17 @@ function ReporteList() {
   const [reportes, setReportes] = useState([]);
   const [reporteEditado, setReporteEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/reportes")
+    fetchWithToken(`${API_URL}/reportes`)
       .then((data) => setReportes(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarReporte = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/reportes/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/reportes/${id}`, { method: "DELETE" });
       setReportes(reportes.filter((r) => r.idReporte !== id));
     } catch (error) {
       alert(error.message);

@@ -32,9 +32,10 @@ function FacturaForm({ facturaEditada, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = factura.idFactura ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = factura.idFactura
-      ? `http://localhost:8080/facturas/${factura.idFactura}`
-      : "http://localhost:8080/facturas";
+      ? `${API_URL}/facturas/${factura.idFactura}`
+      : `${API_URL}/facturas`;
 
     const facturaEnviar = {
       ...factura,

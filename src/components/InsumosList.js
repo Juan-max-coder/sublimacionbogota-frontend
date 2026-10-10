@@ -11,20 +11,22 @@ function InsumosList() {
   const [insumos, setInsumos] = useState([]);
   const [insumoEditado, setInsumoEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   // Cargar insumos desde el backend al iniciar
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/insumos")
+    fetchWithToken(`${API_URL}/insumos`)
       .then((data) => {
         console.log("Insumos recibidos:", data);
         setInsumos(data);
       })
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   // Eliminar insumo por id
   const eliminarInsumo = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/insumos/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/insumos/${id}`, { method: "DELETE" });
       setInsumos(insumos.filter((i) => i.idInsumo !== id));
     } catch (error) {
       alert(error.message);

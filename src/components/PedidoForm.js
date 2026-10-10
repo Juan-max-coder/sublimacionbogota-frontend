@@ -36,9 +36,10 @@ function PedidoForm({ pedidoEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = pedido.idPedido ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = pedido.idPedido
-      ? `http://localhost:8080/pedidos/${pedido.idPedido}`
-      : "http://localhost:8080/pedidos";
+      ? `${API_URL}/pedidos/${pedido.idPedido}`
+      : `${API_URL}/pedidos`;
 
     // Convertir fechas a objetos Date antes de enviar
     const pedidoEnviar = {

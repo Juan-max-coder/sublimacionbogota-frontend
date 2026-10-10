@@ -28,9 +28,10 @@ function ReporteForm({ reporteEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = reporte.idReporte ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = reporte.idReporte
-      ? `http://localhost:8080/reportes/${reporte.idReporte}`
-      : "http://localhost:8080/reportes";
+      ? `${API_URL}/reportes/${reporte.idReporte}`
+      : `${API_URL}/reportes`;
 
     const reporteEnviar = {
       ...reporte,

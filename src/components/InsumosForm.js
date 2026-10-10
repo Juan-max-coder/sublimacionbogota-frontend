@@ -25,9 +25,10 @@ function InsumosForm({ insumoEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = insumo.idInsumo ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = insumo.idInsumo
-      ? `http://localhost:8080/insumos/${insumo.idInsumo}`
-      : "http://localhost:8080/insumos";
+      ? `${API_URL}/insumos/${insumo.idInsumo}`
+      : `${API_URL}/insumos`;
 
     try {
       const data = await fetchWithToken(url, {

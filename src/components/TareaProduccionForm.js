@@ -25,9 +25,10 @@ function TareaProduccionForm({ tareaEditada, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = tarea.idTarea ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = tarea.idTarea
-      ? `http://localhost:8080/tareas/${tarea.idTarea}`
-      : "http://localhost:8080/tareas";
+      ? `${API_URL}/tareas/${tarea.idTarea}`
+      : `${API_URL}/tareas`;
 
     try {
       const data = await fetchWithToken(url, {

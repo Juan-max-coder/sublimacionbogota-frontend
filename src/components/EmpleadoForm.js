@@ -25,9 +25,10 @@ function EmpleadoForm({ empleadoEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = empleado.idEmpleado ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = empleado.idEmpleado
-      ? `http://localhost:8080/empleados/${empleado.idEmpleado}`
-      : "http://localhost:8080/empleados";
+      ? `${API_URL}/empleados/${empleado.idEmpleado}`
+      : `${API_URL}/empleados`;
 
     try {
       const data = await fetchWithToken(url, {

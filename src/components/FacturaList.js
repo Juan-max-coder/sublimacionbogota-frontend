@@ -11,15 +11,17 @@ function FacturaList() {
   const [facturas, setFacturas] = useState([]);
   const [facturaEditada, setFacturaEditada] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/facturas")
+    fetchWithToken(`${API_URL}/facturas`)
       .then((data) => setFacturas(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarFactura = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/facturas/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/facturas/${id}`, { method: "DELETE" });
       setFacturas(facturas.filter((f) => f.idFactura !== id));
     } catch (error) {
       alert(error.message);

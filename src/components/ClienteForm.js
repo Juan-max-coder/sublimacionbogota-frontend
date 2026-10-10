@@ -26,9 +26,10 @@ function ClienteForm({ clienteEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = cliente.idCliente ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = cliente.idCliente
-      ? `http://localhost:8080/clientes/${cliente.idCliente}`
-      : "http://localhost:8080/clientes";
+      ? `${API_URL}/clientes/${cliente.idCliente}`
+      : `${API_URL}/clientes`;
 
     try {
       const data = await fetchWithToken(url, {

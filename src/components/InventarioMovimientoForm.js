@@ -23,9 +23,10 @@ function InventarioMovimientoForm({ movimientoEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = movimiento.idMovimiento ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = movimiento.idMovimiento
-      ? `http://localhost:8080/movimientos/${movimiento.idMovimiento}`
-      : "http://localhost:8080/movimientos";
+      ? `${API_URL}/movimientos/${movimiento.idMovimiento}`
+      : `${API_URL}/movimientos`;
 
     try {
       const data = await fetchWithToken(url, {

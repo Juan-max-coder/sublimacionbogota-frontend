@@ -11,20 +11,22 @@ function EmpleadoList() {
   const [empleados, setEmpleados] = useState([]);
   const [empleadoEditado, setEmpleadoEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   // Cargar empleados desde el backend al iniciar
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/empleados")
+    fetchWithToken(`${API_URL}/empleados`)
       .then((data) => {
         console.log("Empleados recibidos:", data);
         setEmpleados(data);
       })
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   // Eliminar empleado por id
   const eliminarEmpleado = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/empleados/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/empleados/${id}`, { method: "DELETE" });
       setEmpleados(empleados.filter((e) => e.idEmpleado !== id));
     } catch (error) {
       alert(error.message);

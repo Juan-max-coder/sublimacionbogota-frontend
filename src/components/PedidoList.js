@@ -11,15 +11,17 @@ function PedidoList() {
   const [pedidos, setPedidos] = useState([]);
   const [pedidoEditado, setPedidoEditado] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/pedidos")
+    fetchWithToken(`${API_URL}/pedidos`)
       .then((data) => setPedidos(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarPedido = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/pedidos/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/pedidos/${id}`, { method: "DELETE" });
       setPedidos(pedidos.filter((p) => p.idPedido !== id));
     } catch (error) {
       alert(error.message);

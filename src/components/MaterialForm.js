@@ -25,9 +25,10 @@ function MaterialForm({ materialEditado, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = material.idMaterial ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = material.idMaterial
-      ? `http://localhost:8080/materiales/${material.idMaterial}`
-      : "http://localhost:8080/materiales";
+      ? `${API_URL}/materiales/${material.idMaterial}`
+      : `${API_URL}/materiales`;
 
     try {
       const data = await fetchWithToken(url, {

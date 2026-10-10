@@ -11,15 +11,17 @@ function TareaProduccionList() {
   const [tareas, setTareas] = useState([]);
   const [tareaEditada, setTareaEditada] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/tareas")
+    fetchWithToken(`${API_URL}/tareas`)
       .then((data) => setTareas(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarTarea = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/tareas/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/tareas/${id}`, { method: "DELETE" });
       setTareas(tareas.filter((t) => t.idTarea !== id));
     } catch (error) {
       alert(error.message);

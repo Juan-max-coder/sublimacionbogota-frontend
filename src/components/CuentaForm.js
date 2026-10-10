@@ -27,9 +27,10 @@ function CuentaForm({ cuentaEditada, onSave }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const method = cuenta.idUsuario ? "PUT" : "POST";
+    const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
     const url = cuenta.idUsuario
-      ? `http://localhost:8080/usuarios/${cuenta.idUsuario}`
-      : "http://localhost:8080/usuarios";
+      ? `${API_URL}/usuarios/${cuenta.idUsuario}`
+      : `${API_URL}/usuarios`;
 
     try {
       const data = await fetchWithToken(url, {

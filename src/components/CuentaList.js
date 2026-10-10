@@ -11,15 +11,17 @@ function CuentaList() {
   const [cuentas, setCuentas] = useState([]);
   const [cuentaEditada, setCuentaEditada] = useState(null);
 
+  const API_URL = process.env.REACT_APP_API_URL || 'https://sublimacionbogotaframework-production.up.railway.app';
+
   useEffect(() => {
-    fetchWithToken("http://localhost:8080/usuarios")
+    fetchWithToken(`${API_URL}/usuarios`)
       .then((data) => setCuentas(data))
       .catch((err) => alert(err.message));
-  }, []);
+  }, [API_URL]);
 
   const eliminarCuenta = async (id) => {
     try {
-      await fetchWithToken(`http://localhost:8080/usuarios/${id}`, { method: "DELETE" });
+      await fetchWithToken(`${API_URL}/usuarios/${id}`, { method: "DELETE" });
       setCuentas(cuentas.filter((c) => c.idUsuario !== id));
     } catch (error) {
       alert(error.message);
